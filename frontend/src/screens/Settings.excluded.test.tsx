@@ -33,9 +33,7 @@ describe("Settings excluded-features boundary", () => {
 
     expect(screen.getByText(/what this tool does not do/i)).toBeInTheDocument();
     expect(screen.getByText("No payments, billing or invoicing")).toBeInTheDocument();
-    expect(
-      screen.getByText("No automated patient SMS or email reminders"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("No automated patient SMS or email reminders")).toBeInTheDocument();
   });
 
   it("[AC-040] states the tool is standalone with no EHR / HL7 / FHIR integration", () => {
