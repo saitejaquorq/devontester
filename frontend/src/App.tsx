@@ -1,4 +1,11 @@
-import { NavLink, Navigate, Outlet, Route, Routes, useNavigate as useRouterNavigate } from "react-router-dom";
+import {
+  NavLink,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useNavigate as useRouterNavigate,
+} from "react-router-dom";
 
 import { Icons } from "@/lib/icons";
 import { AuthProvider, useAuth } from "@/lib/auth";

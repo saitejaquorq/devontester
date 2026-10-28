@@ -1,5 +1,5 @@
 // @ts-nocheck -- generated from the approved design under its JS runtime contract; not hand-written TypeScript.
- 
+
 import React from "react";
 
 import { Icons } from "@/lib/icons";
@@ -7,7 +7,6 @@ import { brand } from "@/lib/brand";
 import { useNavigate } from "@/lib/navigate";
 import { useAuth } from "@/lib/auth";
 
- 
 const { AlertCircle } = Icons;
 
 const PRODUCT = "DevonTester";

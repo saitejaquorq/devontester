@@ -75,9 +75,7 @@ test.describe("sign-in", () => {
     await expect(page.getByRole("alert")).toHaveCount(0);
   });
 
-  test("[AC-002] invalid sign-in shows a generic error naming neither field", async ({
-    page,
-  }) => {
+  test("[AC-002] invalid sign-in shows a generic error naming neither field", async ({ page }) => {
     await signIn(page, VALID_USERNAME, "definitely-the-wrong-password");
 
     const alert = page.getByRole("alert");

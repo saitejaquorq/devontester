@@ -37,10 +37,9 @@ describe("SignIn", () => {
         });
       }
       if (url.endsWith("/auth/me")) {
-        return new Response(
-          JSON.stringify({ id: "u1", username: "r.okonkwo", role: "staff" }),
-          { status: 200 },
-        );
+        return new Response(JSON.stringify({ id: "u1", username: "r.okonkwo", role: "staff" }), {
+          status: 200,
+        });
       }
       return new Response("not found", { status: 404 });
     });

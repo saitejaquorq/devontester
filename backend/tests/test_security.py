@@ -1,6 +1,6 @@
 """Unit tests for password hashing and JWT session helpers."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import jwt
 import pytest
@@ -37,7 +37,7 @@ def test_ac001_create_and_decode_access_token_round_trips() -> None:
 
 
 def test_decode_rejects_expired_token() -> None:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     expired = jwt.encode(
         {
             "sub": "acc-1",

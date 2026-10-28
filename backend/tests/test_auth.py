@@ -61,9 +61,7 @@ def test_login_with_wrong_password_and_unknown_username_return_identical_401(rec
 def test_login_rejects_inactive_account(db_session, receptionist):
     from app import models
 
-    account = (
-        db_session.query(models.Account).filter_by(username=receptionist["username"]).first()
-    )
+    account = db_session.query(models.Account).filter_by(username=receptionist["username"]).first()
     account.is_active = False
     db_session.commit()
 

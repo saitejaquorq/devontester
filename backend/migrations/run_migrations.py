@@ -33,9 +33,7 @@ def main() -> None:
                 continue
             with conn.transaction():
                 conn.execute(path.read_text())
-                conn.execute(
-                    "INSERT INTO schema_migrations (filename) VALUES (%s)", (path.name,)
-                )
+                conn.execute("INSERT INTO schema_migrations (filename) VALUES (%s)", (path.name,))
             print(f"applied {path.name}")
         conn.commit()
 

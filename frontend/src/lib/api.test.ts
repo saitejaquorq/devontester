@@ -19,7 +19,9 @@ describe("apiFetch", () => {
 
   it("sends the stored session JWT as a bearer token on every request", async () => {
     setSessionToken("tok-xyz");
-    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    const fetchMock = vi.fn(
+      async () => new Response(JSON.stringify({ ok: true }), { status: 200 }),
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     await apiFetch("/patients");
@@ -34,7 +36,9 @@ describe("apiFetch", () => {
 
   it("a 401 response clears the stored session and announces session expiry", async () => {
     setSessionToken("tok-xyz");
-    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ detail: "no" }), { status: 401 }));
+    const fetchMock = vi.fn(
+      async () => new Response(JSON.stringify({ detail: "no" }), { status: 401 }),
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     const onExpired = vi.fn();
