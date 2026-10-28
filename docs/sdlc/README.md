@@ -6,7 +6,7 @@
 An appointment calendar app for clinic visits with history of every person available.
 Should have history of a user. used by the receptionist of the clinic. No access to patients
 
-**Documentation version:** v2
+**Documentation version:** v3
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -16,14 +16,14 @@ Should have history of a user. used by the receptionist of the clinic. No access
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 9 entries |
-| [Development](development/README.md) | 1 entry |
+| [Development](development/README.md) | 9 entries |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
 | [Data model](architecture/data-model.md) | generated |
 | [API (OpenAPI)](architecture/api/openapi.yaml) | generated |
 | [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
-| [Sprint plan](development/sprint-plan.md) | not generated yet |
+| [Sprint plan](development/sprint-plan.md) | 4 sprints |
 | [Developer guide](development/developer-guide.md) | generated |
 | [API reference](development/api-reference.md) | 1 route |
 | [Test report](testing/test-report.md) | not run yet |
@@ -32,7 +32,7 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 18 requirements |
-| [Changelog](CHANGELOG.md) | 2 versions |
+| [Changelog](CHANGELOG.md) | 3 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -72,7 +72,22 @@ Should have history of a user. used by the receptionist of the clinic. No access
 
 ### Development
 
-- Development phase has not started or its outputs have not been provided -- nothing has been built yet per the available input.
+- Input does not explicitly map individual stories/tasks to a specific sprint number -- the groupings implied by matching sprint goal wording to story titles are an inference, not a stated assignment. Confirm actual sprint assignment.
+- No burndown, velocity, or sprint completion status provided for any of the 4 sprints.
+- Epic owner role is unassigned.
+- No implementation/completion status provided for US-001, US-002, US-003 or their tasks -- only the planned breakdown exists in this input.
+- No implementation/completion status provided for US-004, US-005, US-006.
+- No tasks were broken out for these stories, unlike other epics -- unclear if task breakdown is pending or intentionally omitted.
+- No implementation/completion status provided for US-007 or US-008.
+- No implementation/completion status provided for US-009 through US-012.
+- US-010, US-011, US-012 have no task-level breakdown while US-009 does -- unclear whether that is intentional or incomplete planning.
+- No implementation/completion status provided for US-013.
+- No detail given on what status values are supported (e.g. checked-in, no-show, completed) -- only the story title is known.
+- No implementation/completion status provided for US-014.
+- No implementation/completion status provided for US-015.
+- No detail given on the content or location of the in-app help documentation.
+- No implementation/completion status provided for US-016, US-017, US-018.
+- US-018's scope exclusions are referenced only by title -- no list of which features are explicitly out of scope was provided in this input.
 
 ### Testing
 

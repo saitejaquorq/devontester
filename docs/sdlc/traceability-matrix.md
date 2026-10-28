@@ -9,22 +9,22 @@ Built from recorded links, not written by a model: requirement key → plan item
 <!-- sdlc:auto:start matrix -->
 | Requirement | Epic | Title | Plan items | Sprint | Design | Code | Commits | Ticket | Tests | AC tests | Deployed |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| US-001 | EPIC-001 | Receptionist sign-in | — | — | — | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
-| US-002 | EPIC-001 | Sign out | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-003 | EPIC-001 | Admin and staff roles | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-004 | EPIC-002 | Add a new patient record | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-005 | EPIC-002 | Edit an existing patient record | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-006 | EPIC-002 | Find a patient | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-007 | EPIC-003 | View a provider's day or week calendar | — | — | — | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
-| US-008 | EPIC-003 | Today's appointments overview | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-009 | EPIC-004 | Book an appointment | — | — | — | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
-| US-010 | EPIC-004 | Add a reason-for-visit / front-desk note | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-011 | EPIC-004 | Reschedule an appointment | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-012 | EPIC-004 | Cancel an appointment | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-013 | EPIC-005 | Mark appointment status | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-014 | EPIC-006 | View a patient's appointment history | — | — | — | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
-| US-015 | EPIC-007 | Access how-to documentation | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-016 | EPIC-008 | Responsive desktop web access | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-017 | EPIC-008 | Secure transport and authentication baseline | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-018 | EPIC-008 | Excluded features boundary | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-001 | EPIC-001 | Receptionist sign-in | US-001, US-001-T1, US-001-T2, US-001-T3, US-001-T4 | 1 | GET /auth/me, POST /auth/login, api_backend, database, users, web_frontend | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
+| US-002 | EPIC-001 | Sign out | US-002 | 1 | POST /auth/logout, api_backend, users, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-003 | EPIC-001 | Admin and staff roles | US-003, US-003-T1, US-003-T2, US-003-T3, US-003-T4 | 2 | GET /accounts, PATCH /accounts/{id}, POST /accounts, api_backend, database, users, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-004 | EPIC-002 | Add a new patient record | US-004 | 1 | GET /patients, POST /patients, api_backend, database, patients, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-005 | EPIC-002 | Edit an existing patient record | US-005 | 2 | PATCH /patients/{id}, api_backend, patients, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-006 | EPIC-002 | Find a patient | US-006 | 3 | GET /patients, api_backend, patients, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-007 | EPIC-003 | View a provider's day or week calendar | US-007, US-007-T1, US-007-T2, US-007-T3 | 2 | GET /calendar, GET /providers, api_backend, appointments, providers, web_frontend | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
+| US-008 | EPIC-003 | Today's appointments overview | US-008 | 4 | GET /appointments/today, api_backend, appointments, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-009 | EPIC-004 | Book an appointment | US-009, US-009-T1, US-009-T2, US-009-T3, US-009-T4 | 3 | POST /appointments, api_backend, appointments, database, patients, providers, web_frontend | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
+| US-010 | EPIC-004 | Add a reason-for-visit / front-desk note | US-010 | 3 | PATCH /appointments/{id}, POST /appointments, api_backend, appointments, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-011 | EPIC-004 | Reschedule an appointment | US-011 | 4 | PATCH /appointments/{id}, api_backend, appointments, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-012 | EPIC-004 | Cancel an appointment | US-012 | 3 | PATCH /appointments/{id}/status, api_backend, appointments, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-013 | EPIC-005 | Mark appointment status | US-013 | 3 | PATCH /appointments/{id}/status, api_backend, appointments, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-014 | EPIC-006 | View a patient's appointment history | US-014 | 4 | GET /patients/{id}/history, api_backend, appointments, patients, providers, web_frontend | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
+| US-015 | EPIC-007 | Access how-to documentation | US-015 | 4 | GET /help, api_backend, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-016 | EPIC-008 | Responsive desktop web access | US-016 | 4 | web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-017 | EPIC-008 | Secure transport and authentication baseline | US-017 | 1 | api_backend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-018 | EPIC-008 | Excluded features boundary | US-018 | 1 | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
 <!-- sdlc:auto:end matrix -->
