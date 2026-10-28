@@ -6,7 +6,7 @@
 An appointment calendar app for clinic visits with history of every person available.
 Should have history of a user. used by the receptionist of the clinic. No access to patients
 
-**Documentation version:** v7
+**Documentation version:** v8
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -32,7 +32,7 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | [Runbook](deployment/runbook.md) | deployed |
 | [Release notes](deployment/release-notes.md) | 4 releases |
 | [Traceability matrix](traceability-matrix.md) | 18 requirements |
-| [Changelog](CHANGELOG.md) | 7 versions |
+| [Changelog](CHANGELOG.md) | 8 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -89,12 +89,12 @@ Should have history of a user. used by the receptionist of the clinic. No access
 
 ### Deployment
 
-- Deployment date/timestamp not provided.
-- No record of which user stories (US-001..US-018) or features are included in this release -- cannot link related_ids without fabricating.
-- No approver or sign-off recorded for this deployment.
-- No rollback plan, monitoring, or incident-response notes provided for this live environment.
-- No test-phase results referenced as having gated this release.
-- Project involves clinic patient visit history handled by receptionists (no direct patient access); no evidence was provided confirming HIPAA-relevant safeguards (encryption in transit/at rest, access controls, audit logging, BAA with hosting providers) for the live frontend/backend endpoints -- should be confirmed given the healthcare domain.
+- No deployment date/timestamp given.
+- No record of who approved or triggered this deployment.
+- No release notes or changelog indicating which requirement keys (e.g. US-001..US-018) or tickets are included in this version.
+- No rollback or incident plan documented.
+- No confirmation of environment type (production vs staging) beyond 'live' status.
+- No link to the testing phase results that would normally gate a production release -- testing phase input was not supplied.
 
 ### Maintenance
 
