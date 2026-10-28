@@ -5,7 +5,14 @@
 <!-- sdlc:auto:start endpoints -->
 | Method | Path | Handler | Source | Summary |
 |---|---|---|---|---|
-| GET | /health | health | `backend/app/main.py:42` | Liveness probe, and the only route here that is not a stub. |
+| POST | /auth/login | login | `backend/app/routers/auth.py:40` | — |
+| POST | /auth/logout | logout | `backend/app/routers/auth.py:53` | — |
+| GET | /auth/me | me | `backend/app/routers/auth.py:68` | — |
+| GET | /health | health | `backend/app/main.py:88` | Liveness probe, and the only non-auth route that needs no token. |
+| GET | /patients | list_patients | `backend/app/routers/patients.py:22` | — |
+| POST | /patients | create_patient | `backend/app/routers/patients.py:43` | — |
+| GET | /patients/{patient_id} | get_patient | `backend/app/routers/patients.py:62` | — |
+| PATCH | /patients/{patient_id} | update_patient | `backend/app/routers/patients.py:72` | — |
 <!-- sdlc:auto:end endpoints -->
 
 <!-- sdlc:auto:start drift -->
@@ -13,10 +20,8 @@
 
 - GET /accounts
 - GET /appointments/today
-- GET /auth/me
 - GET /calendar
 - GET /help
-- GET /patients
 - GET /patients/{id}
 - GET /patients/{id}/history
 - GET /providers
@@ -26,11 +31,13 @@
 - PATCH /patients/{id}
 - POST /accounts
 - POST /appointments
-- POST /auth/login
-- POST /auth/logout
-- POST /patients
+
+**Code only:**
+
+- GET /patients/{patient_id}
+- PATCH /patients/{patient_id}
 <!-- sdlc:auto:end drift -->
 
 <!-- sdlc:auto:start source -->
-Generated from commit `dc52ca3`
+Generated from commit `d3dbc3c`
 <!-- sdlc:auto:end source -->

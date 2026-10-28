@@ -6,7 +6,7 @@
 An appointment calendar app for clinic visits with history of every person available.
 Should have history of a user. used by the receptionist of the clinic. No access to patients
 
-**Documentation version:** v6
+**Documentation version:** v7
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -16,7 +16,7 @@ Should have history of a user. used by the receptionist of the clinic. No access
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 9 entries |
-| [Development](development/README.md) | 9 entries |
+| [Development](development/README.md) | 7 entries |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
@@ -25,14 +25,14 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
 | [Sprint plan](development/sprint-plan.md) | 4 sprints |
 | [Developer guide](development/developer-guide.md) | generated |
-| [API reference](development/api-reference.md) | 1 route |
+| [API reference](development/api-reference.md) | 8 routes |
 | [Test report](testing/test-report.md) | not run yet |
-| [Tests](testing/test-cases.md) | 0 tests |
+| [Tests](testing/test-cases.md) | 81 tests |
 | [Deployment guide](deployment/deployment-guide.md) | deployed |
 | [Runbook](deployment/runbook.md) | deployed |
-| [Release notes](deployment/release-notes.md) | 3 releases |
+| [Release notes](deployment/release-notes.md) | 4 releases |
 | [Traceability matrix](traceability-matrix.md) | 18 requirements |
-| [Changelog](CHANGELOG.md) | 6 versions |
+| [Changelog](CHANGELOG.md) | 7 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -72,22 +72,16 @@ Should have history of a user. used by the receptionist of the clinic. No access
 
 ### Development
 
-- Input does not explicitly map individual stories/tasks to a specific sprint number -- the groupings implied by matching sprint goal wording to story titles are an inference, not a stated assignment. Confirm actual sprint assignment.
-- No burndown, velocity, or sprint completion status provided for any of the 4 sprints.
-- Epic owner role is unassigned.
-- No implementation/completion status provided for US-001, US-002, US-003 or their tasks -- only the planned breakdown exists in this input.
-- No implementation/completion status provided for US-004, US-005, US-006.
-- No tasks were broken out for these stories, unlike other epics -- unclear if task breakdown is pending or intentionally omitted.
-- No implementation/completion status provided for US-007 or US-008.
-- No implementation/completion status provided for US-009 through US-012.
-- US-010, US-011, US-012 have no task-level breakdown while US-009 does -- unclear whether that is intentional or incomplete planning.
-- No implementation/completion status provided for US-013.
-- No detail given on what status values are supported (e.g. checked-in, no-show, completed) -- only the story title is known.
-- No implementation/completion status provided for US-014.
-- No implementation/completion status provided for US-015.
-- No detail given on the content or location of the in-app help documentation.
-- No implementation/completion status provided for US-016, US-017, US-018.
-- US-018's scope exclusions are referenced only by title -- no list of which features are explicitly out of scope was provided in this input.
+- No explicit mapping is given of which backlog items belong to which sprint, so sprint-to-story traceability cannot be confirmed beyond the sprint goal descriptions.
+- Epic-level items (EPIC-001 through EPIC-008) have no points or assigned role recorded in the plan.
+- Run status says 'completed' yet 13 of 18 planned stories (US-003, US-005 through US-016) have no delivered/ticket status recorded -- unclear whether this run only covered a partial scope or those stories remain unbuilt.
+- US-001, US-002, and US-017 all cite the identical commit hash (9eb9e558361ff8945abe70f37b8ba235f8d828ae); unclear whether they shipped as one combined change or this is a reporting duplication.
+- Task-level delivery (e.g., US-001-T1..T4, US-003-T1..T4, US-007-T1..T3, US-009-T1..T4) is not individually confirmed -- only story-level ticket status was reported.
+- Individual subtask completion (US-001-T1 through T4) is not separately confirmed -- only the parent story ticket status was reported.
+- Shares a commit hash with US-001 and US-017; unclear if bundled into a single change or a data duplication in reporting.
+- No frontend task was listed in the plan for a patient-entry UI; unclear whether a matching screen was built alongside the backend record creation.
+- Shares commit hash with US-001/US-002; the input does not detail what transport/auth baseline configuration was actually applied.
+- Delivered under a qa-agent role rather than a dev role; the input does not specify what boundary/exclusion logic or documentation was actually implemented.
 
 ### Testing
 

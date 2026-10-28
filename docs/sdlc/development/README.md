@@ -3,107 +3,76 @@
 > Maintained by QuorQ AI SDLC. Text between `sdlc:auto` markers is regenerated; anything outside them is yours and is kept.
 
 <!-- sdlc:auto:start narrative -->
-### DEV-PLAN-001 · approved · source: plan:v1
+### PLAN-v1 · approved · source: plan:v1
 
-Development plan version 1 is approved and organizes work into 4 sprints of capacity 20 each, covering authentication through rescheduling, history, help docs, and responsiveness.
+Development plan version 1 is approved, organized into 4 sprints (capacity 20 each) covering authentication, patient records, calendar viewing, booking workflow, and polish/help docs across 8 epics and 18 user stories.
 
-Plan status: approved, version 1. Sprint 1 goal: stand up authentication, secure transport, and patient record creation (capacity 20). Sprint 2 goal: add account administration, patient editing/search, and provider calendar viewing (capacity 20). Sprint 3 goal: enable appointment booking with notes, conflict detection, cancellation and status tracking (capacity 20). Sprint 4 goal: deliver rescheduling, patient history, today's overview, help docs and desktop responsiveness (capacity 20).
+Plan status: approved (version 1). Sprint goals: Sprint 1 - stand up authentication, secure transport, and patient record creation; Sprint 2 - add account administration, patient editing/search, and provider calendar viewing; Sprint 3 - enable appointment booking with notes, conflict detection, cancellation and status tracking; Sprint 4 - deliver rescheduling, patient history, today's overview, help docs and desktop responsiveness. Backlog by epic: EPIC-001 Receptionist Authentication & Access Control -> US-001 Receptionist sign-in (8pts, backend-agent; tasks: users table/migration, login/session endpoints, sign-in form/auth context, route guard for unauthenticated access), US-002 Sign out (3pts, backend-agent), US-003 Admin and staff roles (8pts, backend-agent; tasks: role field/admin-only authorization, account management endpoints, admin account management screen, hide account management from staff). EPIC-002 Patient Record Management -> US-004 Add a new patient record (5pts, backend-agent), US-005 Edit an existing patient record (3pts, backend-agent), US-006 Find a patient (3pts, backend-agent). EPIC-003 Per-Provider Appointment Calendar -> US-007 View a provider's day/week calendar (8pts, frontend-agent; tasks: calendar/providers endpoints, day/week grid, provider selector), US-008 Today's appointments overview (3pts, frontend-agent). EPIC-004 Appointment Booking, Rescheduling & Cancellation -> US-009 Book an appointment (8pts, backend-agent; tasks: appointments table/constraints, booking endpoint with conflict validation, slot selection/patient-link booking flow, booking conflict warning), US-010 Reason-for-visit/front-desk note (2pts, backend-agent), US-011 Reschedule an appointment (5pts, backend-agent), US-012 Cancel an appointment (3pts, backend-agent). EPIC-005 Appointment Status Tracking -> US-013 Mark appointment status (3pts, backend-agent). EPIC-006 Per-Patient Visit History -> US-014 View a patient's appointment history (5pts, backend-agent). EPIC-007 Receptionist Help Documentation -> US-015 Access how-to documentation (3pts, frontend-agent). EPIC-008 Platform, Security & Scope Boundaries -> US-016 Responsive desktop web access (3pts, frontend-agent), US-017 Secure transport and authentication baseline (3pts, devops-agent), US-018 Excluded features boundary (1pt, qa-agent).
 
 **Related:** US-001, US-002, US-003, US-004, US-005, US-006, US-007, US-008, US-009, US-010, US-011, US-012, US-013, US-014, US-015, US-016, US-017, US-018
 
-- ⚠ Input does not explicitly map individual stories/tasks to a specific sprint number -- the groupings implied by matching sprint goal wording to story titles are an inference, not a stated assignment. Confirm actual sprint assignment.
-- ⚠ No burndown, velocity, or sprint completion status provided for any of the 4 sprints.
+- ⚠ No explicit mapping is given of which backlog items belong to which sprint, so sprint-to-story traceability cannot be confirmed beyond the sprint goal descriptions.
+- ⚠ Epic-level items (EPIC-001 through EPIC-008) have no points or assigned role recorded in the plan.
 
-### DEV-EPIC-001 · approved · source: plan:EPIC-001
+### DEV-RUN-2026 · approved · source: dev:run-status
 
-Epic covering receptionist authentication and role-based access control: sign-in, sign-out, and admin/staff roles.
+Development run is marked 'completed', but ticket outcomes were only reported for 5 of the 18 planned user stories.
 
-US-001 Receptionist sign-in (8 pts, backend-agent): tasks are (1) add users table and migration, (2) implement login and session endpoints, (3) build sign-in form and auth context, (4) add route guard for unauthenticated access. US-002 Sign out (3 pts, backend-agent): no subtasks listed. US-003 Admin and staff roles (8 pts, backend-agent): tasks are (1) add role field and admin-only authorization, (2) implement account management endpoints, (3) build admin account management screen, (4) hide account management from staff role.
+Run status reported as completed. Delivered tickets: US-001 Receptionist sign-in (commit 9eb9e558361ff8945abe70f37b8ba235f8d828ae), US-002 Sign out (commit 9eb9e558361ff8945abe70f37b8ba235f8d828ae), US-004 Add a new patient record (commit 36c8db44a84353f6cc49ff0882abb03ca28988cc), US-017 Secure transport and authentication baseline (commit 9eb9e558361ff8945abe70f37b8ba235f8d828ae), US-018 Excluded features boundary (commit fbac89b180f06a491a9b53a67ec02b9c95f5ffa3). No ticket records were provided for US-003, US-005, US-006, US-007, US-008, US-009, US-010, US-011, US-012, US-013, US-014, US-015, or US-016, even though the approved plan covers all of these across Sprints 1-4.
 
-**Related:** US-001, US-002, US-003
+**Related:** US-001, US-002, US-004, US-017, US-018
 
-- ⚠ Epic owner role is unassigned.
-- ⚠ No implementation/completion status provided for US-001, US-002, US-003 or their tasks -- only the planned breakdown exists in this input.
+- ⚠ Run status says 'completed' yet 13 of 18 planned stories (US-003, US-005 through US-016) have no delivered/ticket status recorded -- unclear whether this run only covered a partial scope or those stories remain unbuilt.
+- ⚠ US-001, US-002, and US-017 all cite the identical commit hash (9eb9e558361ff8945abe70f37b8ba235f8d828ae); unclear whether they shipped as one combined change or this is a reporting duplication.
+- ⚠ Task-level delivery (e.g., US-001-T1..T4, US-003-T1..T4, US-007-T1..T3, US-009-T1..T4) is not individually confirmed -- only story-level ticket status was reported.
 
-### DEV-EPIC-002 · approved · source: plan:EPIC-002
+### US-001 · approved · source: dev:US-001
 
-Epic covering patient record management: creating, editing, and searching patient records.
+Receptionist sign-in story is marked delivered.
 
-US-004 Add a new patient record (5 pts, backend-agent). US-005 Edit an existing patient record (3 pts, backend-agent). US-006 Find a patient (3 pts, backend-agent). No subtasks were listed for any of these three stories.
+Ticket US-001 (Receptionist sign-in, 8 points, backend-agent) marked delivered under commit 9eb9e558361ff8945abe70f37b8ba235f8d828ae. Planned subtasks: add users table and migration, implement login and session endpoints, build sign-in form and auth context, add route guard for unauthenticated access.
 
-**Related:** US-004, US-005, US-006
+**Related:** US-001-T1, US-001-T2, US-001-T3, US-001-T4, EPIC-001
 
-- ⚠ Epic owner role is unassigned.
-- ⚠ No implementation/completion status provided for US-004, US-005, US-006.
-- ⚠ No tasks were broken out for these stories, unlike other epics -- unclear if task breakdown is pending or intentionally omitted.
+- ⚠ Individual subtask completion (US-001-T1 through T4) is not separately confirmed -- only the parent story ticket status was reported.
 
-### DEV-EPIC-003 · approved · source: plan:EPIC-003
+### US-002 · approved · source: dev:US-002
 
-Epic covering the per-provider appointment calendar view and the day's overview.
+Sign out story is marked delivered.
 
-US-007 View a provider's day or week calendar (8 pts, frontend-agent): tasks are (1) implement calendar and providers endpoints, (2) build day/week calendar grid, (3) add provider selector. US-008 Today's appointments overview (3 pts, frontend-agent): no subtasks listed.
+Ticket US-002 (Sign out, 3 points, backend-agent) marked delivered under commit 9eb9e558361ff8945abe70f37b8ba235f8d828ae (same commit as US-001 and US-017).
 
-**Related:** US-007, US-008
+**Related:** EPIC-001, US-001
 
-- ⚠ Epic owner role is unassigned.
-- ⚠ No implementation/completion status provided for US-007 or US-008.
+- ⚠ Shares a commit hash with US-001 and US-017; unclear if bundled into a single change or a data duplication in reporting.
 
-### DEV-EPIC-004 · approved · source: plan:EPIC-004
+### US-004 · approved · source: dev:US-004
 
-Epic covering appointment booking with notes, conflict detection, rescheduling, and cancellation.
+Add a new patient record story is marked delivered.
 
-US-009 Book an appointment (8 pts, backend-agent): tasks are (1) add appointments table and constraints, (2) implement booking endpoint with conflict validation, (3) build slot selection and patient-link booking flow, (4) surface booking conflict warning. US-010 Add a reason-for-visit / front-desk note (2 pts, backend-agent): no subtasks listed. US-011 Reschedule an appointment (5 pts, backend-agent): no subtasks listed. US-012 Cancel an appointment (3 pts, backend-agent): no subtasks listed.
+Ticket US-004 (Add a new patient record, 5 points, backend-agent) marked delivered under commit 36c8db44a84353f6cc49ff0882abb03ca28988cc. No subtasks were listed for this story in the plan.
 
-**Related:** US-009, US-010, US-011, US-012
+**Related:** EPIC-002
 
-- ⚠ Epic owner role is unassigned.
-- ⚠ No implementation/completion status provided for US-009 through US-012.
-- ⚠ US-010, US-011, US-012 have no task-level breakdown while US-009 does -- unclear whether that is intentional or incomplete planning.
+- ⚠ No frontend task was listed in the plan for a patient-entry UI; unclear whether a matching screen was built alongside the backend record creation.
 
-### DEV-EPIC-005 · approved · source: plan:EPIC-005
+### US-017 · approved · source: dev:US-017
 
-Epic covering appointment status tracking.
+Secure transport and authentication baseline story is marked delivered.
 
-US-013 Mark appointment status (3 pts, backend-agent). No subtasks were listed.
+Ticket US-017 (Secure transport and authentication baseline, 3 points, devops-agent) marked delivered under commit 9eb9e558361ff8945abe70f37b8ba235f8d828ae (same commit as US-001 and US-002).
 
-**Related:** US-013
+**Related:** EPIC-008
 
-- ⚠ Epic owner role is unassigned.
-- ⚠ No implementation/completion status provided for US-013.
-- ⚠ No detail given on what status values are supported (e.g. checked-in, no-show, completed) -- only the story title is known.
+- ⚠ Shares commit hash with US-001/US-002; the input does not detail what transport/auth baseline configuration was actually applied.
 
-### DEV-EPIC-006 · approved · source: plan:EPIC-006
+### US-018 · approved · source: dev:US-018
 
-Epic covering per-patient visit history.
+Excluded features boundary story is marked delivered.
 
-US-014 View a patient's appointment history (5 pts, backend-agent). No subtasks were listed.
+Ticket US-018 (Excluded features boundary, 1 point, qa-agent) marked delivered under commit fbac89b180f06a491a9b53a67ec02b9c95f5ffa3.
 
-**Related:** US-014
+**Related:** EPIC-008
 
-- ⚠ Epic owner role is unassigned.
-- ⚠ No implementation/completion status provided for US-014.
-
-### DEV-EPIC-007 · approved · source: plan:EPIC-007
-
-Epic covering receptionist-facing help documentation within the app.
-
-US-015 Access how-to documentation (3 pts, frontend-agent). No subtasks were listed.
-
-**Related:** US-015
-
-- ⚠ Epic owner role is unassigned.
-- ⚠ No implementation/completion status provided for US-015.
-- ⚠ No detail given on the content or location of the in-app help documentation.
-
-### DEV-EPIC-008 · approved · source: plan:EPIC-008
-
-Epic covering platform, security, and scope-boundary requirements: responsive desktop access, secure transport/auth baseline, and explicit exclusion of out-of-scope features.
-
-US-016 Responsive desktop web access (3 pts, frontend-agent). US-017 Secure transport and authentication baseline (3 pts, devops-agent). US-018 Excluded features boundary (1 pt, qa-agent). No subtasks were listed for any of the three.
-
-**Related:** US-016, US-017, US-018
-
-- ⚠ Epic owner role is unassigned.
-- ⚠ No implementation/completion status provided for US-016, US-017, US-018.
-- ⚠ US-018's scope exclusions are referenced only by title -- no list of which features are explicitly out of scope was provided in this input.
+- ⚠ Delivered under a qa-agent role rather than a dev role; the input does not specify what boundary/exclusion logic or documentation was actually implemented.
 <!-- sdlc:auto:end narrative -->
