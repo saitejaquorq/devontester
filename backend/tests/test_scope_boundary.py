@@ -164,11 +164,10 @@ def test_ac040_openapi_has_no_fhir_hl7_or_ehr_schema() -> None:
 def test_ac040_no_fhir_or_hl7_client_dependency() -> None:
     """The service depends on no external clinical system: no FHIR/HL7 client
     library, and no vendor EHR SDK, in requirements.txt."""
-    offending_deps = [
-        name for name in _requirement_names() if INTEGRATION_DEPENDENCIES.match(name)
-    ]
+    offending_deps = [name for name in _requirement_names() if INTEGRATION_DEPENDENCIES.match(name)]
     assert offending_deps == [], (
-        f"AC-040 violated: backend/requirements.txt depends on an EHR/FHIR/HL7 client: {offending_deps}"
+        "AC-040 violated: backend/requirements.txt depends on an EHR/FHIR/HL7 "
+        f"client: {offending_deps}"
     )
 
 
