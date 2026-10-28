@@ -6,7 +6,7 @@
 An appointment calendar app for clinic visits with history of every person available.
 Should have history of a user. used by the receptionist of the clinic. No access to patients
 
-**Documentation version:** v5
+**Documentation version:** v6
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -30,9 +30,9 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | [Tests](testing/test-cases.md) | 0 tests |
 | [Deployment guide](deployment/deployment-guide.md) | deployed |
 | [Runbook](deployment/runbook.md) | deployed |
-| [Release notes](deployment/release-notes.md) | 2 releases |
+| [Release notes](deployment/release-notes.md) | 3 releases |
 | [Traceability matrix](traceability-matrix.md) | 18 requirements |
-| [Changelog](CHANGELOG.md) | 5 versions |
+| [Changelog](CHANGELOG.md) | 6 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -95,11 +95,12 @@ Should have history of a user. used by the receptionist of the clinic. No access
 
 ### Deployment
 
-- No deployment date/timestamp recorded for this release.
-- No record of who approved or triggered the deployment.
-- No mapping provided between this version and the specific requirements/tickets it includes.
-- No rollback plan, monitoring, or health-check information recorded.
-- No prior deployment history given, so it is unclear if this is the first release or an update superseding an earlier one.
+- Deployment date/timestamp not provided.
+- No record of which user stories (US-001..US-018) or features are included in this release -- cannot link related_ids without fabricating.
+- No approver or sign-off recorded for this deployment.
+- No rollback plan, monitoring, or incident-response notes provided for this live environment.
+- No test-phase results referenced as having gated this release.
+- Project involves clinic patient visit history handled by receptionists (no direct patient access); no evidence was provided confirming HIPAA-relevant safeguards (encryption in transit/at rest, access controls, audit logging, BAA with hosting providers) for the live frontend/backend endpoints -- should be confirmed given the healthcare domain.
 
 ### Maintenance
 
