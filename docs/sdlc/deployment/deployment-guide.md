@@ -7,7 +7,11 @@ Pushes to `main` run `.github/workflows/deploy.yml`, which builds the API image 
 <!-- sdlc:auto:end how-it-deploys -->
 
 <!-- sdlc:auto:start environments -->
-_No environments recorded._
+| Name | Service | Runtime | Scaling | Environment |
+|---|---|---|---|---|
+| Static Web Hosting | Amazon S3 + CloudFront | React 19 static build | CDN edge cache, single clinic load | dev |
+| API Service | AWS App Runner | FastAPI 0.115 on Python container | 1-2 instances, small concurrency | dev |
+| Database | Amazon RDS for PostgreSQL 16 | PostgreSQL 16 | single instance, encryption at rest, automated backups | dev |
 <!-- sdlc:auto:end environments -->
 
 <!-- sdlc:auto:start live -->
@@ -15,5 +19,12 @@ _Not deployed yet._
 <!-- sdlc:auto:end live -->
 
 <!-- sdlc:auto:start topology -->
-_No deployment topology recorded._
+```mermaid
+graph LR
+  n_Static_Web_Hosting["Static Web Hosting<br/>Amazon S3 + CloudFront"]
+  n_API_Service["API Service<br/>AWS App Runner"]
+  n_Database["Database<br/>Amazon RDS for PostgreSQL 16"]
+  n_Static_Web_Hosting -->|"HTTPS"| n_API_Service
+  n_API_Service -->|"TLS (PostgreSQL)"| n_Database
+```
 <!-- sdlc:auto:end topology -->

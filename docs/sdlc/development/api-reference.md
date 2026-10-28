@@ -7,7 +7,26 @@ _No routes found._
 <!-- sdlc:auto:end endpoints -->
 
 <!-- sdlc:auto:start drift -->
-_Code matches the designed API._
+**Designed but missing:**
+
+- GET /accounts
+- GET /appointments/today
+- GET /auth/me
+- GET /calendar
+- GET /help
+- GET /patients
+- GET /patients/{id}
+- GET /patients/{id}/history
+- GET /providers
+- PATCH /accounts/{id}
+- PATCH /appointments/{id}
+- PATCH /appointments/{id}/status
+- PATCH /patients/{id}
+- POST /accounts
+- POST /appointments
+- POST /auth/login
+- POST /auth/logout
+- POST /patients
 <!-- sdlc:auto:end drift -->
 
 <!-- sdlc:auto:start source -->

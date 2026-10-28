@@ -6,7 +6,7 @@
 An appointment calendar app for clinic visits with history of every person available.
 Should have history of a user. used by the receptionist of the clinic. No access to patients
 
-**Documentation version:** v1
+**Documentation version:** v2
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -15,14 +15,14 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | Document | State |
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
-| [Architecture](architecture/README.md) | 1 entry |
+| [Architecture](architecture/README.md) | 9 entries |
 | [Development](development/README.md) | 1 entry |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
-| [Data model](architecture/data-model.md) | not generated yet |
-| [API (OpenAPI)](architecture/api/openapi.yaml) | not generated yet |
-| [Decisions (ADRs)](architecture/adr/README.md) | 0 decisions |
+| [Data model](architecture/data-model.md) | generated |
+| [API (OpenAPI)](architecture/api/openapi.yaml) | generated |
+| [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
 | [Sprint plan](development/sprint-plan.md) | not generated yet |
 | [Developer guide](development/developer-guide.md) | not generated yet |
 | [API reference](development/api-reference.md) | 0 routes |
@@ -32,7 +32,7 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 18 requirements |
-| [Changelog](CHANGELOG.md) | 1 version |
+| [Changelog](CHANGELOG.md) | 2 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -61,7 +61,14 @@ Should have history of a user. used by the receptionist of the clinic. No access
 
 ### Architecture
 
-- Architecture phase has not started or its outputs have not been provided -- no screen inventory, API design, data model, or infrastructure diagram exists yet to document.
+- Architecture input does not explicitly map this design to specific requirement IDs (US-001..US-018); traceability from stories to architecture decisions is not stated and should be confirmed.
+- NFR-005 scope decision (excluding strict HIPAA controls) should be cross-checked against actual requirements/compliance expectations if real patient data is ever introduced.
+- No explicit requirement IDs attached to individual components in the input; inferred only from functional descriptions.
+- Token expiry/refresh behavior and blacklist-on-logout ('if enabled') are not fully specified — /auth/logout description notes blacklisting is conditional, condition not defined.
+- Exact UX of the 'conflict warning' (e.g., can the receptionist override it) is not detailed in architecture input.
+- No explicit requirement IDs tied to individual entities/fields in the input.
+- Pagination, rate limiting, and error-response schema for these endpoints are not specified in the architecture input.
+- No deployment phase input yet exists to confirm this topology was actually provisioned — this entry documents the design/plan only.
 
 ### Development
 

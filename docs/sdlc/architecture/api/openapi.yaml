@@ -2,6 +2,402 @@
 openapi: 3.1.0
 info:
   title: DevonTester
-  version: architecture-v0
+  version: architecture-v1
   description: Designed API from the approved architecture (not extracted from code).
-paths: {}
+paths:
+  /accounts:
+    get:
+      summary: List receptionist accounts (admin only).
+      description: List receptionist accounts (admin only).
+      operationId: get_accounts
+      parameters: []
+      responses:
+        '200':
+          description: '[{id, username, role, is_active}]'
+      security:
+      - bearerAuth: []
+    post:
+      summary: Create a receptionist account (admin only).
+      description: Create a receptionist account (admin only).
+      operationId: post_accounts
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{username, password, role}'
+      responses:
+        '200':
+          description: '{id, username, role}'
+      security:
+      - bearerAuth: []
+  /accounts/{id}:
+    patch:
+      summary: Edit or deactivate an account (admin only).
+      description: Edit or deactivate an account (admin only).
+      operationId: patch_accounts_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{role?, is_active?, password?}'
+      responses:
+        '200':
+          description: '{id, username, role, is_active}'
+      security:
+      - bearerAuth: []
+  /appointments:
+    post:
+      summary: Book an appointment; validates fields and warns on overlap for the
+        same provider.
+      description: Book an appointment; validates fields and warns on overlap for
+        the same provider.
+      operationId: post_appointments
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{patient_id, provider_id, start_time, end_time, reason_note?}'
+      responses:
+        '200':
+          description: 201 {id, status} or 409 conflict
+      security:
+      - bearerAuth: []
+  /appointments/today:
+    get:
+      summary: Today's appointments across providers for the front desk.
+      description: Today's appointments across providers for the front desk.
+      operationId: get_appointments_today
+      parameters: []
+      responses:
+        '200':
+          description: '[{id, start_time, patient_name, provider_name, status}]'
+      security:
+      - bearerAuth: []
+  /appointments/{id}:
+    patch:
+      summary: Reschedule (time/provider) or edit reason note; overlap check applies.
+      description: Reschedule (time/provider) or edit reason note; overlap check applies.
+      operationId: patch_appointments_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{start_time?, end_time?, provider_id?, reason_note?}'
+      responses:
+        '200':
+          description: 200 {id, ...} or 409 conflict
+      security:
+      - bearerAuth: []
+  /appointments/{id}/status:
+    patch:
+      summary: Set status to booked, attended, no-show or cancelled.
+      description: Set status to booked, attended, no-show or cancelled.
+      operationId: patch_appointments_id_status
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{status}'
+      responses:
+        '200':
+          description: '{id, status}'
+      security:
+      - bearerAuth: []
+  /auth/login:
+    post:
+      summary: Authenticate a receptionist and return a JWT; generic error on failure.
+      description: Authenticate a receptionist and return a JWT; generic error on
+        failure.
+      operationId: post_auth_login
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{username, password}'
+      responses:
+        '200':
+          description: '{access_token, role}'
+  /auth/logout:
+    post:
+      summary: End the current session (client discards token; token blacklisted if
+        enabled).
+      description: End the current session (client discards token; token blacklisted
+        if enabled).
+      operationId: post_auth_logout
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: none
+      responses:
+        '200':
+          description: '204'
+      security:
+      - bearerAuth: []
+  /auth/me:
+    get:
+      summary: Return the signed-in user and role for route guarding.
+      description: Return the signed-in user and role for route guarding.
+      operationId: get_auth_me
+      parameters: []
+      responses:
+        '200':
+          description: '{id, username, role}'
+      security:
+      - bearerAuth: []
+  /calendar:
+    get:
+      summary: Appointments for a provider in a day or week range.
+      description: Appointments for a provider in a day or week range.
+      operationId: get_calendar
+      parameters: []
+      responses:
+        '200':
+          description: '[{id, start_time, end_time, status, patient_name, reason_note}]'
+      security:
+      - bearerAuth: []
+  /help:
+    get:
+      summary: Return in-app how-to documentation content.
+      description: Return in-app how-to documentation content.
+      operationId: get_help
+      parameters: []
+      responses:
+        '200':
+          description: '{sections:[...]}'
+      security:
+      - bearerAuth: []
+  /patients:
+    get:
+      summary: Search/list patients by name or contact detail.
+      description: Search/list patients by name or contact detail.
+      operationId: get_patients
+      parameters: []
+      responses:
+        '200':
+          description: '[{id, first_name, last_name, phone, email}]'
+      security:
+      - bearerAuth: []
+    post:
+      summary: Create a patient record (validates required name).
+      description: Create a patient record (validates required name).
+      operationId: post_patients
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{first_name, last_name, phone?, email?}'
+      responses:
+        '200':
+          description: '{id, ...}'
+      security:
+      - bearerAuth: []
+  /patients/{id}:
+    get:
+      summary: Get a patient record.
+      description: Get a patient record.
+      operationId: get_patients_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '{id, first_name, last_name, phone, email}'
+      security:
+      - bearerAuth: []
+    patch:
+      summary: Update contact details (validates email format).
+      description: Update contact details (validates email format).
+      operationId: patch_patients_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{phone?, email?, first_name?, last_name?}'
+      responses:
+        '200':
+          description: '{id, ...}'
+      security:
+      - bearerAuth: []
+  /patients/{id}/history:
+    get:
+      summary: Past and upcoming appointments with date, provider, status, contact
+        and reason note. No clinical data.
+      description: Past and upcoming appointments with date, provider, status, contact
+        and reason note. No clinical data.
+      operationId: get_patients_id_history
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '[{appointment_id, start_time, provider_name, status, reason_note}]'
+      security:
+      - bearerAuth: []
+  /providers:
+    get:
+      summary: List providers to pick a calendar.
+      description: List providers to pick a calendar.
+      operationId: get_providers
+      parameters: []
+      responses:
+        '200':
+          description: '[{id, name, specialty}]'
+      security:
+      - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    users:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        password_hash:
+          type: string
+        role:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - username
+      - password_hash
+      - role
+      - is_active
+      - created_at
+    patients:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - first_name
+      - last_name
+      - created_at
+      - updated_at
+    providers:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        specialty:
+          type: string
+        is_active:
+          type: boolean
+      required:
+      - id
+      - name
+      - is_active
+    appointments:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        patient_id:
+          type: string
+          format: uuid
+        provider_id:
+          type: string
+          format: uuid
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+        reason_note:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - patient_id
+      - provider_id
+      - start_time
+      - end_time
+      - status
+      - created_at
+      - updated_at
