@@ -17,5 +17,8 @@ ruff>=0.6
 # BEGIN QUORQ ARCHITECTURE PACKAGES
 email-validator>=2.1.0
 passlib[bcrypt]>=1.7.4
+# passlib 1.7.4's bcrypt self-test breaks on bcrypt>=4.1 (removed __about__,
+# stricter 72-byte check) -- pin the last bcrypt release passlib verifies cleanly.
+bcrypt==4.0.1
 PyJWT>=2.8.0
 # END QUORQ ARCHITECTURE PACKAGES
