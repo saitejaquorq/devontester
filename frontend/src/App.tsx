@@ -1,6 +1,14 @@
-import { NavLink, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import {
+  NavLink,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useNavigate as useRouterNavigate,
+} from "react-router-dom";
 
 import { Icons } from "@/lib/icons";
+import { AuthProvider, useAuth } from "@/lib/auth";
 import SignIn from "@/screens/SignIn";
 import Today from "@/screens/Today";
 import Calendar from "@/screens/Calendar";
@@ -16,6 +24,14 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 // The app's menu, drawn around every screen except the ones routed outside it below.
 function AppShellLayout() {
+  const { logout } = useAuth();
+  const routerNavigate = useRouterNavigate();
+
+  async function handleSignOut() {
+    await logout();
+    routerNavigate("/sign-in", { replace: true });
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <header
@@ -48,10 +64,14 @@ function AppShellLayout() {
               <Icons.Settings size={16} />
               {"Accounts & help"}
             </NavLink>
-            <NavLink to="/sign-in" className={navLinkClass}>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="flex items-center gap-2 rounded-[var(--brand-radius)] px-3 py-2 text-sm font-medium text-[var(--brand-fg-muted)] transition-colors"
+            >
               <Icons.X size={16} />
               {"Sign out"}
-            </NavLink>
+            </button>
           </nav>
         </div>
       </header>
@@ -62,18 +82,30 @@ function AppShellLayout() {
   );
 }
 
+// Guards every route nested inside it: while the session is being resolved against
+// GET /auth/me nothing renders, and once resolved an unauthenticated visitor is sent to
+// /sign-in instead of the protected screen underneath.
+function RequireAuth() {
+  const { status } = useAuth();
+  if (status === "loading") return null;
+  if (status !== "authenticated") return <Navigate to="/sign-in" replace />;
+  return <AppShellLayout />;
+}
+
 export default function App() {
   return (
-    <Routes>
-      <Route element={<AppShellLayout />}>
-        <Route path="/today" element={<Today />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/patients" element={<Patients />} />
-        <Route path="/patient-detail" element={<PatientDetail />} />
-        <Route path="/settings" element={<Settings />} />
-      </Route>
-      <Route path="/sign-in" element={<SignIn />} />
-      <Route path="*" element={<Navigate to="/sign-in" replace />} />
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route element={<RequireAuth />}>
+          <Route path="/today" element={<Today />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/patients" element={<Patients />} />
+          <Route path="/patient-detail" element={<PatientDetail />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="*" element={<Navigate to="/sign-in" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
