@@ -11,5 +11,7 @@ _No unit-test run yet._
 <!-- sdlc:auto:end unit -->
 
 <!-- sdlc:auto:start dev-checks -->
-_No development runs yet._
+### Sprint 1
+
+_No test steps recorded._
 <!-- sdlc:auto:end dev-checks -->

@@ -6,7 +6,7 @@
 An appointment calendar app for clinic visits with history of every person available.
 Should have history of a user. used by the receptionist of the clinic. No access to patients
 
-**Documentation version:** v4
+**Documentation version:** v5
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -30,9 +30,9 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | [Tests](testing/test-cases.md) | 0 tests |
 | [Deployment guide](deployment/deployment-guide.md) | deployed |
 | [Runbook](deployment/runbook.md) | deployed |
-| [Release notes](deployment/release-notes.md) | 1 release |
+| [Release notes](deployment/release-notes.md) | 2 releases |
 | [Traceability matrix](traceability-matrix.md) | 18 requirements |
-| [Changelog](CHANGELOG.md) | 4 versions |
+| [Changelog](CHANGELOG.md) | 5 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -95,12 +95,11 @@ Should have history of a user. used by the receptionist of the clinic. No access
 
 ### Deployment
 
-- No deployment date/timestamp provided for this release.
-- No record of who approved or executed the deployment.
-- No mapping given between this deployment and the requirement keys (US-001..US-018) it is meant to fulfill.
-- No confirmation this release followed successful testing -- no test phase input was supplied alongside this deployment record.
-- No rollback or monitoring/alerting plan mentioned.
-- Unclear whether this environment (Amplify frontend / sslip.io backend) is production or a staging/demo environment.
+- No deployment date/timestamp recorded for this release.
+- No record of who approved or triggered the deployment.
+- No mapping provided between this version and the specific requirements/tickets it includes.
+- No rollback plan, monitoring, or health-check information recorded.
+- No prior deployment history given, so it is unclear if this is the first release or an update superseding an earlier one.
 
 ### Maintenance
 
