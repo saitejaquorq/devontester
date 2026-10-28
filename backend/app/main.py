@@ -16,7 +16,12 @@ from app.database import Base, engine
 
 app = FastAPI(
     title="DevonTester",
-    description="An appointment calendar app for clinic visits with history of every person available.\nShould have history of a user. used by the receptionist of the clinic. No access to patients",
+    description=(
+        "An appointment calendar app for clinic visits with history of every "
+        "person available.\n"
+        "Should have history of a user. used by the receptionist of the clinic. "
+        "No access to patients"
+    ),
     version="0.1.0",
 )
 

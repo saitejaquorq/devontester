@@ -1,0 +1,54 @@
+{
+  "key": {
+    "app_design_id": "66720e15-a758-43b6-9952-237c007d66ef",
+    "app_design_version": 1,
+    "architecture_document_id": "7938efcd-9e02-4acb-8a19-82151bdd20f6",
+    "architecture_version": 1
+  },
+  "outcome": "prepared",
+  "packages": [
+    {
+      "ecosystem": "pypi",
+      "installed_version": "1.7.4",
+      "name": "passlib[bcrypt]",
+      "status": "installed",
+      "version": ">=1.7.4"
+    },
+    {
+      "ecosystem": "pypi",
+      "installed_version": "2.15.1",
+      "name": "PyJWT",
+      "status": "installed",
+      "version": ">=2.8.0"
+    },
+    {
+      "ecosystem": "pypi",
+      "installed_version": "2.3.0",
+      "name": "email-validator",
+      "status": "installed",
+      "version": ">=2.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "error": "already provided by the scaffold",
+      "name": "react-big-calendar",
+      "status": "skipped",
+      "version": ">=1.8.0"
+    },
+    {
+      "ecosystem": "npm",
+      "error": "already provided by the scaffold",
+      "name": "date-fns",
+      "status": "skipped",
+      "version": ">=3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "error": "already provided by the scaffold",
+      "name": "react-router-dom",
+      "status": "skipped",
+      "version": ">=6.22.0"
+    }
+  ],
+  "prepared_by_run": "de6bd9a5-90b9-4dd8-8f8d-8ba4a62a291f"
+}
