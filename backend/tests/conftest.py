@@ -8,7 +8,7 @@ no SQLite stand-in, no mocked database.
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -57,19 +57,19 @@ def receptionist(db_session):
 
     username = f"qa.receptionist.{uuid.uuid4().hex[:8]}"
     password = "Correct-Horse-Battery-Staple-9!"
-    user = models.User(
+    account = models.Account(
         id=str(uuid.uuid4()),
         username=username,
         password_hash=_hash(password),
         role="receptionist",
         is_active=True,
-        created_at=datetime.now(timezone.utc),
+        created_at=datetime.now(UTC),
     )
-    db_session.add(user)
+    db_session.add(account)
     db_session.commit()
-    db_session.refresh(user)
+    db_session.refresh(account)
 
-    yield {"username": username, "password": password, "id": str(user.id)}
+    yield {"username": username, "password": password, "id": str(account.id)}
 
-    db_session.delete(db_session.merge(user))
+    db_session.delete(db_session.merge(account))
     db_session.commit()

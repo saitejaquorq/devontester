@@ -11,7 +11,7 @@ expected until the routes land, and is reported as PENDING, not a defect,
 by QA for this run.
 """
 
-from datetime import timedelta
+from datetime import UTC, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
@@ -61,8 +61,10 @@ def test_login_with_wrong_password_and_unknown_username_return_identical_401(rec
 def test_login_rejects_inactive_account(db_session, receptionist):
     from app import models
 
-    user = db_session.query(models.User).filter_by(username=receptionist["username"]).first()
-    user.is_active = False
+    account = (
+        db_session.query(models.Account).filter_by(username=receptionist["username"]).first()
+    )
+    account.is_active = False
     db_session.commit()
 
     response = client.post(
@@ -84,9 +86,7 @@ def test_protected_endpoint_rejects_missing_token():
 
 
 def test_protected_endpoint_rejects_invalid_token():
-    response = client.get(
-        PROTECTED_ENDPOINT, headers={"Authorization": "Bearer not-a-real-token"}
-    )
+    response = client.get(PROTECTED_ENDPOINT, headers={"Authorization": "Bearer not-a-real-token"})
     assert response.status_code == 401
 
 
@@ -101,32 +101,29 @@ def _expired_token_for(username: str) -> str:
     try:
         from app.security import create_access_token
 
-        return create_access_token(
-            {"sub": username}, expires_delta=timedelta(seconds=-60)
-        )
+        return create_access_token({"sub": username}, expires_delta=timedelta(seconds=-60))
     except (ImportError, TypeError):
         pass
 
     try:
+        from datetime import datetime
+
         import jwt
 
-        from app.security import ALGORITHM, SECRET_KEY
-        from datetime import datetime, timezone
+        from app.security import JWT_ALGORITHM, JWT_SECRET_KEY
 
         payload = {
             "sub": username,
-            "exp": datetime.now(timezone.utc) - timedelta(seconds=60),
+            "exp": datetime.now(UTC) - timedelta(seconds=60),
         }
-        return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+        return jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
     except Exception as exc:  # pragma: no cover - environment-dependent
         pytest.skip(f"cannot mint an expired token in this checkout: {exc}")
 
 
 def test_protected_endpoint_rejects_expired_token(receptionist):
     token = _expired_token_for(receptionist["username"])
-    response = client.get(
-        PROTECTED_ENDPOINT, headers={"Authorization": f"Bearer {token}"}
-    )
+    response = client.get(PROTECTED_ENDPOINT, headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 401
 
 
@@ -137,9 +134,7 @@ def test_protected_endpoint_accepts_valid_token(receptionist):
     )
     token = login.json()["access_token"]
 
-    response = client.get(
-        PROTECTED_ENDPOINT, headers={"Authorization": f"Bearer {token}"}
-    )
+    response = client.get(PROTECTED_ENDPOINT, headers={"Authorization": f"Bearer {token}"})
 
     assert response.status_code == 200
     body = response.json()
