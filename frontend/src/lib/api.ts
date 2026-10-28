@@ -19,6 +19,21 @@ const SESSION_STORAGE_KEY = "devontester.session_token";
 // send the user back to /sign-in, without api.ts needing to know about routing.
 export const SESSION_EXPIRED_EVENT = "devontester:session-expired";
 
+// Thrown for any non-2xx response. Carries the HTTP status and the parsed JSON body (when
+// there is one) so callers -- e.g. a form that needs to show a 422's field errors -- can
+// read structured detail instead of re-parsing a generic error message.
+export class ApiError extends Error {
+  status: number;
+  body: unknown;
+
+  constructor(message: string, status: number, body: unknown) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.body = body;
+  }
+}
+
 export function getSessionToken(): string | null {
   try {
     return window.localStorage.getItem(SESSION_STORAGE_KEY);
@@ -53,15 +68,22 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
       ...(init?.headers ?? {}),
     },
   });
+  const method = init?.method ?? "GET";
   if (response.status === 401) {
     clearSessionToken();
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
     }
-    throw new Error(`${init?.method ?? "GET"} ${path} failed: 401`);
+    throw new ApiError(`${method} ${path} failed: 401`, 401, undefined);
   }
   if (!response.ok) {
-    throw new Error(`${init?.method ?? "GET"} ${path} failed: ${response.status}`);
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch {
+      body = undefined;
+    }
+    throw new ApiError(`${method} ${path} failed: ${response.status}`, response.status, body);
   }
   return response.status === 204 ? (undefined as T) : ((await response.json()) as T);
 }
