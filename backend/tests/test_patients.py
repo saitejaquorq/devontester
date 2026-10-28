@@ -198,7 +198,9 @@ def test_ac003_patch_patient_requires_a_valid_jwt(receptionist, db_session):
 
 def test_ac003_patient_routes_reject_an_invalid_token(receptionist, db_session):
     bad_headers = {"Authorization": "Bearer not-a-real-token"}
-    created = client.post(PATIENTS_ENDPOINT, json=_valid_payload(), headers=_auth_headers(receptionist))
+    created = client.post(
+        PATIENTS_ENDPOINT, json=_valid_payload(), headers=_auth_headers(receptionist)
+    )
     assert created.status_code == 201
     patient_id = created.json()["id"]
 
@@ -208,7 +210,9 @@ def test_ac003_patient_routes_reject_an_invalid_token(receptionist, db_session):
             client.post(PATIENTS_ENDPOINT, json=_valid_payload(), headers=bad_headers).status_code
             == 401
         )
-        assert client.get(f"{PATIENTS_ENDPOINT}/{patient_id}", headers=bad_headers).status_code == 401
+        assert (
+            client.get(f"{PATIENTS_ENDPOINT}/{patient_id}", headers=bad_headers).status_code == 401
+        )
         assert (
             client.patch(
                 f"{PATIENTS_ENDPOINT}/{patient_id}", json={"phone": "999"}, headers=bad_headers
