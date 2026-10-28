@@ -1,0 +1,81 @@
+# DevonTester — SDLC Documentation
+
+> Maintained by QuorQ AI SDLC. Text between `sdlc:auto` markers is regenerated; anything outside them is yours and is kept.
+
+<!-- sdlc:auto:start overview -->
+An appointment calendar app for clinic visits with history of every person available.
+Should have history of a user. used by the receptionist of the clinic. No access to patients
+
+**Documentation version:** v1
+<!-- sdlc:auto:end overview -->
+
+## Contents
+
+<!-- sdlc:auto:start contents -->
+| Document | State |
+|---|---|
+| [Requirements](requirements/README.md) | v1 approved |
+| [Architecture](architecture/README.md) | 1 entry |
+| [Development](development/README.md) | 1 entry |
+| [Testing](testing/README.md) | 1 entry |
+| [Deployment](deployment/README.md) | 1 entry |
+| [Maintenance](maintenance/README.md) | 1 entry |
+| [Data model](architecture/data-model.md) | not generated yet |
+| [API (OpenAPI)](architecture/api/openapi.yaml) | not generated yet |
+| [Decisions (ADRs)](architecture/adr/README.md) | 0 decisions |
+| [Sprint plan](development/sprint-plan.md) | not generated yet |
+| [Developer guide](development/developer-guide.md) | not generated yet |
+| [API reference](development/api-reference.md) | 0 routes |
+| [Test report](testing/test-report.md) | not run yet |
+| [Tests](testing/test-cases.md) | 0 tests |
+| [Deployment guide](deployment/deployment-guide.md) | not deployed yet |
+| [Runbook](deployment/runbook.md) | not deployed yet |
+| [Release notes](deployment/release-notes.md) | 0 releases |
+| [Traceability matrix](traceability-matrix.md) | 18 requirements |
+| [Changelog](CHANGELOG.md) | 1 version |
+<!-- sdlc:auto:end contents -->
+
+## Open gaps
+
+<!-- sdlc:auto:start open-gaps -->
+### Requirements
+
+- No password complexity, lockout, or MFA policy specified for receptionist/admin accounts.
+- Assumption that strict HIPAA access controls (break-glass, per-read audit logging) are not required because only dummy data is used -- needs explicit human/compliance confirmation before any real PHI is introduced.
+- No data-retention period defined for patient records.
+- Phone number format/validation rules not specified (only email validation is mentioned).
+- No patient consent-capture mechanism mentioned, even as a placeholder for future real-PHI use.
+- No requirement describes how providers themselves are created/configured/managed.
+- No timezone handling specified for the calendar.
+- Not specified whether a receptionist can override/force a booking despite a conflict warning, or whether it is a hard block.
+- No cancellation-reason field mentioned.
+- No requirement specifies who may change status after the fact, or whether a status-change history/audit trail is kept.
+- No export/print capability mentioned for history records.
+- No pagination or volume handling specified for patients with long histories.
+- Only the requirement for help content exists; the actual in-app help text/screens have not been produced yet -- this is a development-phase deliverable not yet started.
+- Encryption at rest is not explicitly required anywhere in the requirements (only encryption in transit is specified) -- recommend confirming database/storage encryption at rest even for dummy data, as defense-in-depth.
+- No WCAG/accessibility requirement is stated for this staff-facing application -- confirm whether accessibility standards apply to internal clinical staff tools under the organization's policy.
+- No tested backup/recovery or high-availability requirement is stated beyond general mention that AWS 'comfortably hosts' the app -- confirm whether backup/recovery testing is needed for a clinical front-desk workflow.
+- HL7/FHIR/DICOM interoperability and FDA SaMD/EU MDR medical-device classification are explicitly out of scope on the stated assumption the app does not inform diagnosis or treatment -- recommend human/compliance confirmation that this classification assumption holds.
+- Patient consent and proxy/caregiver access are not applicable because there is no patient-facing or caregiver access in this tool -- recommend explicit written confirmation of this assumption for the compliance file.
+
+### Architecture
+
+- Architecture phase has not started or its outputs have not been provided -- no screen inventory, API design, data model, or infrastructure diagram exists yet to document.
+
+### Development
+
+- Development phase has not started or its outputs have not been provided -- nothing has been built yet per the available input.
+
+### Testing
+
+- Testing phase has not started -- no verification of any acceptance criteria (AC-001 through AC-040) or non-functional requirement exists yet.
+
+### Deployment
+
+- No deployment recorded yet -- the approved AWS hosting plan has not been evidenced as implemented.
+
+### Maintenance
+
+- No post-deployment/maintenance activity exists yet because the application has not been deployed.
+<!-- sdlc:auto:end open-gaps -->
