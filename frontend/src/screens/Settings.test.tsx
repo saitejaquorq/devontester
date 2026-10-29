@@ -62,9 +62,13 @@ describe("Settings screen — accounts", () => {
 
     await waitFor(() => expect(screen.getByText("d.okafor")).toBeInTheDocument());
     expect(screen.getByText("t.whitfield")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /deactivate account d.okafor/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /deactivate account d.okafor/i }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /edit d.okafor/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /reactivate account t.whitfield/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /reactivate account t.whitfield/i }),
+    ).toBeInTheDocument();
   });
 
   it("[AC-006] creating an account validates required fields before calling POST /accounts", async () => {
@@ -76,7 +80,9 @@ describe("Settings screen — accounts", () => {
     });
     renderSettings(fetchMock);
 
-    await waitFor(() => expect(screen.getByText(/no receptionist accounts yet/i)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText(/no receptionist accounts yet/i)).toBeInTheDocument(),
+    );
 
     fireEvent.click(screen.getByRole("button", { name: /^create account$/i }));
 
@@ -109,10 +115,14 @@ describe("Settings screen — accounts", () => {
     });
     renderSettings(fetchMock);
 
-    await waitFor(() => expect(screen.getByText(/no receptionist accounts yet/i)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText(/no receptionist accounts yet/i)).toBeInTheDocument(),
+    );
 
     fireEvent.change(screen.getByLabelText(/^username$/i), { target: { value: "n.haddad" } });
-    fireEvent.change(screen.getByLabelText(/temporary password/i), { target: { value: "temp12345" } });
+    fireEvent.change(screen.getByLabelText(/temporary password/i), {
+      target: { value: "temp12345" },
+    });
     fireEvent.click(screen.getByRole("button", { name: /^create account$/i }));
 
     await waitFor(() => expect(screen.getByText("n.haddad")).toBeInTheDocument());
@@ -134,10 +144,14 @@ describe("Settings screen — accounts", () => {
     });
     renderSettings(fetchMock);
 
-    await waitFor(() => expect(screen.getByText(/no receptionist accounts yet/i)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText(/no receptionist accounts yet/i)).toBeInTheDocument(),
+    );
 
     fireEvent.change(screen.getByLabelText(/^username$/i), { target: { value: "d.okafor" } });
-    fireEvent.change(screen.getByLabelText(/temporary password/i), { target: { value: "temp12345" } });
+    fireEvent.change(screen.getByLabelText(/temporary password/i), {
+      target: { value: "temp12345" },
+    });
     fireEvent.click(screen.getByRole("button", { name: /^create account$/i }));
 
     const alert = await screen.findByRole("alert");
@@ -203,9 +217,7 @@ describe("Settings screen — accounts", () => {
     fireEvent.change(screen.getByLabelText("Role for d.okafor"), { target: { value: "admin" } });
     fireEvent.click(screen.getByRole("button", { name: /save role for d.okafor/i }));
 
-    await waitFor(() =>
-      expect(screen.getByRole("cell", { name: "Admin" })).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByRole("cell", { name: "Admin" })).toBeInTheDocument());
   });
 
   it("[AC-007] a staff session does not render the Accounts tab or account management, but keeps the how-to guide", async () => {

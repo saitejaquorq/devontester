@@ -165,9 +165,7 @@ def test_deactivated_account_can_no_longer_log_in(admin, db_session):
 
     try:
         # Logs in fine while active.
-        pre = client.post(
-            LOGIN_ENDPOINT, json={"username": new_username, "password": new_password}
-        )
+        pre = client.post(LOGIN_ENDPOINT, json={"username": new_username, "password": new_password})
         assert pre.status_code == 200
 
         client.patch(
@@ -198,7 +196,11 @@ def test_ac007_staff_token_receives_403_on_post_accounts(staff):
     headers = _auth_headers(staff)
     response = client.post(
         ACCOUNTS_ENDPOINT,
-        json={"username": f"blocked.{uuid.uuid4().hex[:8]}", "password": "Whatever-9!", "role": "staff"},
+        json={
+            "username": f"blocked.{uuid.uuid4().hex[:8]}",
+            "password": "Whatever-9!",
+            "role": "staff",
+        },
         headers=headers,
     )
     assert response.status_code == 403

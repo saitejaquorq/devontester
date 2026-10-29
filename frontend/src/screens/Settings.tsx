@@ -30,17 +30,8 @@ const {
   Empty,
 } = UI;
 
-const {
-  Plus,
-  X,
-  ChevronRight,
-  ChevronDown,
-  Calendar,
-  Clock,
-  Edit,
-  AlertCircle,
-  CheckCircle,
-} = Icons;
+const { Plus, X, ChevronRight, ChevronDown, Calendar, Clock, Edit, AlertCircle, CheckCircle } =
+  Icons;
 
 const withAlpha = (hex, a) => {
   const h = String(hex || "#000000").replace("#", "");
@@ -688,19 +679,39 @@ export default function Screen() {
                   >
                     <THead>
                       <TR style={{ borderBottom: `1px solid ${hairline}` }}>
-                        <TH scope="col" className="px-6 py-3 text-left font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-left font-normal"
+                          style={labelStyle}
+                        >
                           Username
                         </TH>
-                        <TH scope="col" className="px-6 py-3 text-left font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-left font-normal"
+                          style={labelStyle}
+                        >
                           Role
                         </TH>
-                        <TH scope="col" className="px-6 py-3 text-left font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-left font-normal"
+                          style={labelStyle}
+                        >
                           Active
                         </TH>
-                        <TH scope="col" className="px-6 py-3 text-left font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-left font-normal"
+                          style={labelStyle}
+                        >
                           Created
                         </TH>
-                        <TH scope="col" className="px-6 py-3 text-right font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-right font-normal"
+                          style={labelStyle}
+                        >
                           <span className="sr-only">Account actions</span>
                         </TH>
                       </TR>
@@ -711,7 +722,11 @@ export default function Screen() {
                         const isConfirming = confirmId === a.id;
                         const busy = rowBusyId === a.id;
                         return (
-                          <TR key={a.id} className="vel-row transition-colors" style={{ borderBottom: `1px solid ${hairlineSoft}` }}>
+                          <TR
+                            key={a.id}
+                            className="vel-row transition-colors"
+                            style={{ borderBottom: `1px solid ${hairlineSoft}` }}
+                          >
                             <TD className="px-6 py-4 align-middle">
                               <div className="flex items-center gap-3">
                                 <Avatar name={a.username} className="h-9 w-9 shrink-0" />
@@ -755,7 +770,11 @@ export default function Screen() {
                                 style={{ color: a.is_active ? brand.primaryColor : muted }}
                               >
                                 {a.is_active ? (
-                                  <CheckCircle className="h-4 w-4" aria-hidden="true" style={{ color: accent }} />
+                                  <CheckCircle
+                                    className="h-4 w-4"
+                                    aria-hidden="true"
+                                    style={{ color: accent }}
+                                  />
                                 ) : (
                                   <X className="h-4 w-4" aria-hidden="true" />
                                 )}
@@ -777,7 +796,11 @@ export default function Screen() {
                                     disabled={busy}
                                     aria-label={`Confirm deactivating ${a.username}`}
                                     className={ghostBtn}
-                                    style={{ ...ghostStyle, color: EMBER, border: `1px solid ${withAlpha(EMBER, 0.45)}` }}
+                                    style={{
+                                      ...ghostStyle,
+                                      color: EMBER,
+                                      border: `1px solid ${withAlpha(EMBER, 0.45)}`,
+                                    }}
                                   >
                                     {busy ? "Deactivating…" : "Confirm"}
                                   </Button>
@@ -831,7 +854,11 @@ export default function Screen() {
                                       onClick={() => askDeactivate(a)}
                                       aria-label={`Deactivate account ${a.username}`}
                                       className={ghostBtn}
-                                      style={{ ...ghostStyle, color: EMBER, border: `1px solid ${withAlpha(EMBER, 0.45)}` }}
+                                      style={{
+                                        ...ghostStyle,
+                                        color: EMBER,
+                                        border: `1px solid ${withAlpha(EMBER, 0.45)}`,
+                                      }}
                                     >
                                       Deactivate
                                     </Button>
@@ -935,7 +962,10 @@ export default function Screen() {
                                 {String(i + 1).padStart(2, "0")}
                               </span>
                               <span className="flex-1">
-                                <span className="block text-[16px]" style={{ color: brand.primaryColor }}>
+                                <span
+                                  className="block text-[16px]"
+                                  style={{ color: brand.primaryColor }}
+                                >
                                   {item.title}
                                 </span>
                                 <span className="mt-1 block text-sm" style={{ color: muted }}>
@@ -945,12 +975,18 @@ export default function Screen() {
                               <ChevronDown
                                 className="mt-1 h-4 w-4 shrink-0 transition-transform duration-200"
                                 aria-hidden="true"
-                                style={{ color: muted, transform: open ? "rotate(180deg)" : "none" }}
+                                style={{
+                                  color: muted,
+                                  transform: open ? "rotate(180deg)" : "none",
+                                }}
                               />
                             </button>
                           </h3>
                           {open ? (
-                            <div id={`${item.id}-steps`} className="vel-steps px-6 pb-6 pl-[4.25rem]">
+                            <div
+                              id={`${item.id}-steps`}
+                              className="vel-steps px-6 pb-6 pl-[4.25rem]"
+                            >
                               <ol className="space-y-2">
                                 {item.steps.map((s, si) => (
                                   <li
@@ -995,7 +1031,10 @@ export default function Screen() {
                     >
                       What this tool does not do
                     </CardTitle>
-                    <CardDescription className="mt-2 text-sm leading-relaxed" style={{ color: muted }}>
+                    <CardDescription
+                      className="mt-2 text-sm leading-relaxed"
+                      style={{ color: muted }}
+                    >
                       Agreed scope for DevonTester. If a patient asks for any of these at the desk,
                       handle it the way the clinic did before.
                     </CardDescription>
@@ -1004,7 +1043,11 @@ export default function Screen() {
                     <ul className="space-y-4">
                       {NOT_IN_SCOPE.map((line) => (
                         <li key={line} className="flex items-start gap-3 text-sm leading-relaxed">
-                          <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" style={{ color: EMBER }} />
+                          <X
+                            className="mt-0.5 h-4 w-4 shrink-0"
+                            aria-hidden="true"
+                            style={{ color: EMBER }}
+                          />
                           <span style={{ color: brand.primaryColor }}>{line}</span>
                         </li>
                       ))}
