@@ -16,7 +16,9 @@ from app import models  # noqa: F401 -- imported so the tables register before c
 from app.auth import extract_bearer_token, verify_token
 from app.database import Base, SessionLocal, engine
 from app.routers import auth as auth_router
+from app.routers import calendar as calendar_router
 from app.routers import patients as patients_router
+from app.routers import providers as providers_router
 
 app = FastAPI(
     title="DevonTester",
@@ -50,6 +52,8 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(auth_router.router)
 app.include_router(patients_router.router)
+app.include_router(providers_router.router)
+app.include_router(calendar_router.router)
 
 # Paths reachable with no token at all. Everything else -- present and future -- is
 # behind the blanket check below, so a new router never has to remember to protect

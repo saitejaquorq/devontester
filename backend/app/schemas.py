@@ -72,3 +72,24 @@ class PatientOut(BaseModel):
     email: str | None = None
     created_at: datetime
     updated_at: datetime
+
+
+class ProviderOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    name: str
+    specialty: str | None = None
+    is_active: bool
+
+
+class AppointmentOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    provider_id: str
+    patient_id: str
+    patient_name: str
+    starts_at: datetime
+    ends_at: datetime
+    status: str
