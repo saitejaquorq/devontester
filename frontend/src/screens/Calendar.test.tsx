@@ -12,8 +12,18 @@ function renderCalendar() {
   );
 }
 
-const PROVIDER_A = { id: "pr-1", name: "Dr Amina Khan", specialty: "General practice", is_active: true };
-const PROVIDER_B = { id: "pr-2", name: "Dr Tomas Lindqvist", specialty: "Dermatology", is_active: true };
+const PROVIDER_A = {
+  id: "pr-1",
+  name: "Dr Amina Khan",
+  specialty: "General practice",
+  is_active: true,
+};
+const PROVIDER_B = {
+  id: "pr-2",
+  name: "Dr Tomas Lindqvist",
+  specialty: "Dermatology",
+  is_active: true,
+};
 
 // Dated "today" (not a fixed calendar date) so an appointment on the current day
 // shows up in both the default week view and the day view regardless of when
@@ -130,10 +140,9 @@ describe("Calendar screen", () => {
 
     renderCalendar();
 
-    await waitFor(
-      () => expect(screen.getByText("No appointments")).toBeInTheDocument(),
-      { timeout: 3000 },
-    );
+    await waitFor(() => expect(screen.getByText("No appointments")).toBeInTheDocument(), {
+      timeout: 3000,
+    });
   });
 
   it("[AC error] shows an error state with retry when GET /calendar fails", async () => {

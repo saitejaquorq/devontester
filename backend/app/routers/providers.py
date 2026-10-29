@@ -17,9 +17,4 @@ def list_providers(
     account: Account = Depends(get_current_account),  # noqa: B008
 ) -> list[Provider]:
     del account
-    return (
-        db.query(Provider)
-        .filter(Provider.is_active.is_(True))
-        .order_by(Provider.name)
-        .all()
-    )
+    return db.query(Provider).filter(Provider.is_active.is_(True)).order_by(Provider.name).all()

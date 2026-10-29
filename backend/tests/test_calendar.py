@@ -81,7 +81,6 @@ def _make_appointment(db_session, provider_id, patient_id, starts_at, ends_at=No
 
 
 def _cleanup(db_session, *objects):
-    from app import models
 
     for obj in objects:
         cls = type(obj)

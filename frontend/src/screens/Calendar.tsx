@@ -133,11 +133,17 @@ export default function Screen() {
           ) : providersError ? (
             <Empty
               title="Couldn't load providers"
-              description={errorMessage(providersError, "There was a problem reaching the provider list.")}
+              description={errorMessage(
+                providersError,
+                "There was a problem reaching the provider list.",
+              )}
               action={<Button onClick={loadProviders}>Try again</Button>}
             />
           ) : providers.length === 0 ? (
-            <Empty title="No providers found" description="Add a provider before booking appointments." />
+            <Empty
+              title="No providers found"
+              description="Add a provider before booking appointments."
+            />
           ) : (
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-3">

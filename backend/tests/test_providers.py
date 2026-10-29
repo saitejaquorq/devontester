@@ -59,9 +59,7 @@ def test_get_providers_requires_a_jwt():
 
 
 def test_get_providers_rejects_an_invalid_token():
-    response = client.get(
-        PROVIDERS_ENDPOINT, headers={"Authorization": "Bearer not-a-real-token"}
-    )
+    response = client.get(PROVIDERS_ENDPOINT, headers={"Authorization": "Bearer not-a-real-token"})
     assert response.status_code == 401
 
 
