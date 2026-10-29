@@ -33,12 +33,7 @@ function formatDate(iso) {
 // Turns a thrown ApiError 422 into a field-aware message, matching the pattern
 // used on the Patients list form so there is one way to render API field errors.
 function describeSaveError(err) {
-  if (
-    err instanceof ApiError &&
-    err.status === 422 &&
-    err.body &&
-    Array.isArray(err.body.detail)
-  ) {
+  if (err instanceof ApiError && err.status === 422 && err.body && Array.isArray(err.body.detail)) {
     const fields = [];
     const sentences = [];
     err.body.detail.forEach((d) => {
@@ -215,11 +210,7 @@ export default function Screen() {
 
             <div className="sm:col-span-2 text-sm">
               {fieldError ? (
-                <p
-                  id="contact-error"
-                  role="alert"
-                  className="flex items-center gap-2 text-red-600"
-                >
+                <p id="contact-error" role="alert" className="flex items-center gap-2 text-red-600">
                   <Icons.AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                   {fieldError.message} Nothing was saved — your edits are still here.
                 </p>
@@ -243,7 +234,12 @@ export default function Screen() {
         </CardContent>
       </Card>
 
-      <Button type="button" variant="secondary" className="mt-6" onClick={() => navigate("patients")}>
+      <Button
+        type="button"
+        variant="secondary"
+        className="mt-6"
+        onClick={() => navigate("patients")}
+      >
         Back to patients
       </Button>
     </div>

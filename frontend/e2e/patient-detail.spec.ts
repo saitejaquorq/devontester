@@ -117,7 +117,9 @@ async function openPatientRecord(page: import("@playwright/test").Page, patient:
     .getByRole("button", { name: `Open record for ${patient.firstName} ${patient.lastName}` })
     .click();
 
-  await expect(page.getByRole("heading", { name: `${patient.firstName} ${patient.lastName}` })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: `${patient.firstName} ${patient.lastName}` }),
+  ).toBeVisible();
 }
 
 test.describe("[AC-010] edit a patient's contact detail", () => {
