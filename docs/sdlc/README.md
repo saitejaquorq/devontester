@@ -6,7 +6,7 @@
 An appointment calendar app for clinic visits with history of every person available.
 Should have history of a user. used by the receptionist of the clinic. No access to patients
 
-**Documentation version:** v9
+**Documentation version:** v10
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -32,7 +32,7 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | [Runbook](deployment/runbook.md) | deployed |
 | [Release notes](deployment/release-notes.md) | 5 releases |
 | [Traceability matrix](traceability-matrix.md) | 18 requirements |
-| [Changelog](CHANGELOG.md) | 9 versions |
+| [Changelog](CHANGELOG.md) | 10 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -103,12 +103,11 @@ Should have history of a user. used by the receptionist of the clinic. No access
 
 ### Deployment
 
-- No deployment date/timestamp given.
-- No record of who approved or triggered this deployment.
-- No release notes or changelog indicating which requirement keys (e.g. US-001..US-018) or tickets are included in this version.
-- No rollback or incident plan documented.
-- No confirmation of environment type (production vs staging) beyond 'live' status.
-- No link to the testing phase results that would normally gate a production release -- testing phase input was not supplied.
+- Deployment date/timestamp not provided.
+- No record of who approved or executed this deployment.
+- No release notes or list of which requirements/tickets (e.g. US-001..US-018) are included in this version -- cannot trace this deployment to specific requirements.
+- No indication of deployment environment (e.g. staging vs. production) or rollback plan.
+- No prior deployment history given, so it is unclear if this is the first release or an update.
 
 ### Maintenance
 
