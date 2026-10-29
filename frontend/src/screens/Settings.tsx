@@ -1,20 +1,47 @@
 // @ts-nocheck -- generated from the approved design under its JS runtime contract; not hand-written TypeScript.
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 
 import * as UI from "@/lib/ui";
 import { Icons } from "@/lib/icons";
 import { brand } from "@/lib/brand";
 import { useNavigate } from "@/lib/navigate";
+import { apiFetch, ApiError } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { Button, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, Select, Badge, Table, THead, TBody, TR, TH, TD, Avatar, Empty } = UI;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { Plus, X, ChevronRight, ChevronDown, Calendar, Clock, Edit, ArrowLeft, ArrowRight, AlertCircle, CheckCircle } = Icons;
+const {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  Input,
+  Label,
+  Select,
+  Badge,
+  Table,
+  THead,
+  TBody,
+  TR,
+  TH,
+  TD,
+  Avatar,
+  Empty,
+} = UI;
+
+const { Plus, X, ChevronRight, ChevronDown, Calendar, Clock, Edit, AlertCircle, CheckCircle } =
+  Icons;
 
 const withAlpha = (hex, a) => {
-  const h = String(hex || '#000000').replace('#', '');
-  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const h = String(hex || "#000000").replace("#", "");
+  const full =
+    h.length === 3
+      ? h
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : h;
   const n = parseInt(full, 16);
   const r = (n >> 16) & 255;
   const g = (n >> 8) & 255;
@@ -25,104 +52,132 @@ const withAlpha = (hex, a) => {
 // Velvet token roles — every colour traced back to a brand role.
 // "ember" is the one warning tone: a warm copper that sits inside the
 // Velvet metal language and never competes with the sage accent.
-const EMBER = '#c9896b';
+const EMBER = "#c9896b";
 
-const SESSION = { username: 'm.bennett', role: 'admin' };
+// useAuth() throws outside an AuthProvider. Settings is sometimes exercised in
+// isolation (e.g. a bare scope-boundary test), and in that situation there is
+// no session to read a role from -- so this screen must never crash, and must
+// never guess "admin" when it cannot ask. It simply behaves as if signed in as
+// staff until a real session says otherwise.
+function useSafeAuth() {
+  try {
+    return useAuth();
+  } catch {
+    return null;
+  }
+}
 
-const INITIAL_ACCOUNTS = [
-  { id: 'ACC-0407', username: 'm.bennett', role: 'admin', is_active: true, created_at: '2024-03-11' },
-  { id: 'ACC-0412', username: 'd.okafor', role: 'staff', is_active: true, created_at: '2025-01-08' },
-  { id: 'ACC-0418', username: 'r.lindqvist', role: 'staff', is_active: true, created_at: '2025-06-02' },
-  { id: 'ACC-0421', username: 't.whitfield', role: 'staff', is_active: false, created_at: '2024-09-19' },
-];
+const ROLE_LABELS = { username: "Username", password: "Password", role: "Role" };
 
-// Starters already cleared by the practice manager, waiting for a login.
-const ONBOARDING_QUEUE = [
-  { id: 'ACC-0426', username: 'a.castellanos', role: 'staff', note: 'Maternity cover, Tuesday to Thursday desk.' },
-  { id: 'ACC-0427', username: 'j.nakamura', role: 'staff', note: 'Saturday morning clinic cover.' },
-  { id: 'ACC-0431', username: 'p.osei', role: 'admin', note: 'Practice manager, second admin on the rota.' },
-];
+// Turns a thrown ApiError into the same { fields, message } shape the client-side
+// validator produces, so the form can highlight the field(s) the API rejected (422)
+// without inventing a second error-rendering path.
+function describeAccountError(err) {
+  if (err instanceof ApiError && err.status === 422 && err.body && Array.isArray(err.body.detail)) {
+    const fields = [];
+    const sentences = [];
+    err.body.detail.forEach((d) => {
+      const loc = Array.isArray(d.loc) ? d.loc[d.loc.length - 1] : null;
+      if (loc && fields.indexOf(loc) === -1) fields.push(loc);
+      const label = (loc && ROLE_LABELS[loc]) || "This field";
+      sentences.push(label + " " + (d.msg || "is invalid") + ".");
+    });
+    if (sentences.length) return { fields, message: sentences.join(" ") };
+  }
+  if (err instanceof ApiError && err.status === 409) {
+    return { fields: ["username"], message: "That username is already taken." };
+  }
+  return {
+    fields: [],
+    message: "Something went wrong saving this account. Nothing you typed has been lost.",
+  };
+}
 
 const HELP_ITEMS = [
   {
-    id: 'help-signin',
-    wf: 'i-5-0-0',
-    title: 'Signing in and signing out at the front desk',
-    summary: 'Start your shift, and close the session before you step away.',
+    id: "help-signin",
+    wf: "i-5-0-0",
+    title: "Signing in and signing out at the front desk",
+    summary: "Start your shift, and close the session before you step away.",
     steps: [
-      'Open DevonTester and enter the username and password an admin issued to you.',
-      'If sign-in fails, the message will not say which field was wrong — retype both and try again.',
-      'Select Sign out whenever you leave the desk, even for a five-minute break.',
-      'Once signed out, the browser back button will not bring patient data back on screen.',
+      "Open DevonTester and enter the username and password an admin issued to you.",
+      "If sign-in fails, the message will not say which field was wrong — retype both and try again.",
+      "Select Sign out whenever you leave the desk, even for a five-minute break.",
+      "Once signed out, the browser back button will not bring patient data back on screen.",
     ],
   },
   {
-    id: 'help-patients',
-    wf: 'i-5-0-1',
-    title: 'Adding a patient and keeping contact details up to date',
-    summary: 'Name, phone and email only — no clinical information is stored here.',
+    id: "help-patients",
+    wf: "i-5-0-1",
+    title: "Adding a patient and keeping contact details up to date",
+    summary: "Name, phone and email only — no clinical information is stored here.",
     steps: [
-      'Open Patients and select Add patient.',
-      'Enter first name and last name. The record will not save without a name.',
-      'Add phone and email. A malformed email address is rejected so the record stays usable.',
-      'To correct details later, open the patient record, edit the contact fields and save.',
+      "Open Patients and select Add patient.",
+      "Enter first name and last name. The record will not save without a name.",
+      "Add phone and email. A malformed email address is rejected so the record stays usable.",
+      "To correct details later, open the patient record, edit the contact fields and save.",
     ],
   },
   {
-    id: 'help-booking',
-    wf: 'i-5-0-2',
+    id: "help-booking",
+    wf: "i-5-0-2",
     title: "Booking an appointment into a provider's calendar",
-    summary: 'Pick the provider, pick the slot, link the patient, add the reason note.',
+    summary: "Pick the provider, pick the slot, link the patient, add the reason note.",
     steps: [
-      'Open the provider calendar and choose the provider, then the day or week view.',
-      'Select an open slot and link the patient by searching their name.',
-      'Add a short reason-for-visit note, such as “Follow-up — knee brace fitting”.',
-      'Save. The visit appears in the slot with the status Booked.',
-      'If the provider already has something overlapping that slot, you are warned before it is confirmed.',
+      "Open the provider calendar and choose the provider, then the day or week view.",
+      "Select an open slot and link the patient by searching their name.",
+      "Add a short reason-for-visit note, such as “Follow-up — knee brace fitting”.",
+      "Save. The visit appears in the slot with the status Booked.",
+      "If the provider already has something overlapping that slot, you are warned before it is confirmed.",
     ],
-    navLabel: 'Open provider calendar',
-    navRoute: 'calendar',
+    navLabel: "Open provider calendar",
+    navRoute: "calendar",
   },
   {
-    id: 'help-reschedule',
-    wf: 'i-5-0-3',
-    title: 'Rescheduling or cancelling an appointment',
-    summary: 'Move a visit to a new time or provider, or release the slot entirely.',
+    id: "help-reschedule",
+    wf: "i-5-0-3",
+    title: "Rescheduling or cancelling an appointment",
+    summary: "Move a visit to a new time or provider, or release the slot entirely.",
     steps: [
       "Open the appointment from the calendar or from the patient's visit history.",
-      'To move it, change the date, time or provider and save — it leaves the original slot.',
-      'To cancel, select Cancel appointment and confirm. Nothing changes until you confirm.',
+      "To move it, change the date, time or provider and save — it leaves the original slot.",
+      "To cancel, select Cancel appointment and confirm. Nothing changes until you confirm.",
       "Cancelled visits stay in the patient's history, marked Cancelled.",
     ],
   },
   {
-    id: 'help-status',
-    wf: 'i-5-0-4',
-    title: 'Marking attended, no-show or cancelled',
-    summary: 'Keep the day honest so the history reads correctly tomorrow.',
+    id: "help-status",
+    wf: "i-5-0-4",
+    title: "Marking attended, no-show or cancelled",
+    summary: "Keep the day honest so the history reads correctly tomorrow.",
     steps: [
-      'Every appointment starts as Booked the moment you save it.',
-      'When the patient arrives at the desk, set the status to Attended.',
-      'If they have not arrived by the end of the slot, set No-show.',
+      "Every appointment starts as Booked the moment you save it.",
+      "When the patient arrives at the desk, set the status to Attended.",
+      "If they have not arrived by the end of the slot, set No-show.",
       "The status shows on the appointment, the calendar and the patient's visit history.",
     ],
   },
 ];
 
 const NOT_IN_SCOPE = [
-  'No payments, billing or invoicing',
-  'No automated patient SMS or email reminders',
-  'No EHR / HL7 / FHIR integration',
-  'No patient or clinician logins',
+  "No payments, billing or invoicing",
+  "No automated patient SMS or email reminders",
+  "No EHR / HL7 / FHIR integration",
+  "No patient or clinician logins",
 ];
 
-const formatCreated = (iso) => {
-  const d = new Date(iso + 'T00:00:00');
-  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-};
+function formatCreated(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return String(iso);
+  return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
 
 export default function Screen() {
   const navigate = useNavigate();
+  const auth = useSafeAuth();
+  const isAdmin = auth?.status === "authenticated" && auth.user?.role === "admin";
+
   const surface = withAlpha(brand.primaryColor, 0.035);
   const surfaceHi = withAlpha(brand.primaryColor, 0.06);
   const hairline = withAlpha(brand.primaryColor, 0.11);
@@ -130,13 +185,24 @@ export default function Screen() {
   const accent = brand.accentColor;
   const muted = brand.neutralColor;
 
-  const [tab, setTab] = React.useState('accounts');
-  const [accounts, setAccounts] = React.useState(INITIAL_ACCOUNTS);
-  const [queueIndex, setQueueIndex] = React.useState(0);
-  const [saving, setSaving] = React.useState(false);
+  const [tab, setTab] = React.useState("accounts");
+  const [openHelp, setOpenHelp] = React.useState("help-booking");
+
+  const [accounts, setAccounts] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [loadError, setLoadError] = React.useState(null);
+
+  const [form, setForm] = React.useState({ username: "", password: "", role: "staff" });
+  const [formError, setFormError] = React.useState(null);
+  const [creating, setCreating] = React.useState(false);
+
+  const [editingId, setEditingId] = React.useState(null);
+  const [editRole, setEditRole] = React.useState("staff");
+  const [confirmId, setConfirmId] = React.useState(null);
+  const [rowBusyId, setRowBusyId] = React.useState(null);
+  const [rowError, setRowError] = React.useState(null);
+
   const [banner, setBanner] = React.useState(null);
-  const [newRowId, setNewRowId] = React.useState(null);
-  const [openHelp, setOpenHelp] = React.useState('help-booking');
 
   const timers = React.useRef([]);
   const tabRefs = React.useRef({});
@@ -148,83 +214,165 @@ export default function Screen() {
     timers.current.push(t);
   };
 
-  const sessionRole = SESSION.role;
-  const isAdmin = sessionRole === 'admin';
   const tabs = isAdmin
-    ? [{ key: 'accounts', label: 'Accounts', wf: 'i-1-0-0' }, { key: 'help', label: 'How-to guide', wf: 'i-1-0-1' }]
-    : [{ key: 'help', label: 'How-to guide', wf: 'i-1-0-1' }];
-  const activeTab = isAdmin ? tab : 'help';
+    ? [
+        { key: "accounts", label: "Accounts", wf: "i-1-0-0" },
+        { key: "help", label: "How-to guide", wf: "i-1-0-1" },
+      ]
+    : [{ key: "help", label: "How-to guide", wf: "i-1-0-1" }];
+  const activeTab = isAdmin ? tab : "help";
 
-  const nextHire = ONBOARDING_QUEUE[queueIndex] || null;
+  const loadAccounts = React.useCallback(() => {
+    setLoading(true);
+    setLoadError(null);
+    return apiFetch("/accounts")
+      .then((data) => setAccounts(Array.isArray(data) ? data : []))
+      .catch((err) => setLoadError(err))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const addNextAccount = () => {
-    if (!nextHire || saving) return;
-    setSaving(true);
-    defer(() => {
-      const record = {
-        id: nextHire.id,
-        username: nextHire.username,
-        role: nextHire.role,
-        is_active: true,
-        created_at: new Date().toISOString().slice(0, 10),
-      };
-      setAccounts((prev) => [...prev, record]);
-      setQueueIndex((i) => i + 1);
-      setNewRowId(record.id);
-      setSaving(false);
-      setBanner({
-        tone: 'success',
-        text: `${record.username} added as ${record.role === 'admin' ? 'an admin' : 'a staff'} account. Hand them their temporary password at the desk.`,
+  React.useEffect(() => {
+    if (isAdmin) loadAccounts();
+  }, [isAdmin, loadAccounts]);
+
+  function setField(key, value) {
+    setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  async function handleCreate(event) {
+    event.preventDefault();
+    const username = form.username.trim();
+    const password = form.password;
+    const role = form.role;
+
+    const fields = [];
+    const sentences = [];
+    if (!username) {
+      fields.push("username");
+      sentences.push("Username is required.");
+    }
+    if (!password) {
+      fields.push("password");
+      sentences.push("Password is required.");
+    }
+    if (fields.length) {
+      setFormError({ fields, message: sentences.join(" ") });
+      return;
+    }
+
+    setFormError(null);
+    setCreating(true);
+    try {
+      await apiFetch("/accounts", {
+        method: "POST",
+        body: JSON.stringify({ username, password, role }),
       });
-      defer(() => setNewRowId(null), 2400);
-    }, 650);
-  };
+      setForm({ username: "", password: "", role: "staff" });
+      setBanner({
+        text: `${username} added as ${role === "admin" ? "an admin" : "a staff"} account.`,
+      });
+      await loadAccounts();
+    } catch (err) {
+      setFormError(describeAccountError(err));
+    } finally {
+      setCreating(false);
+    }
+  }
 
-  const toggleRole = (acct) => {
-    const nextRole = acct.role === 'admin' ? 'staff' : 'admin';
-    setAccounts((prev) => prev.map((a) => (a.id === acct.id ? { ...a, role: nextRole } : a)));
-    setNewRowId(acct.id);
-    setBanner({
-      tone: 'success',
-      text:
-        nextRole === 'admin'
-          ? `${acct.username} is now an admin and can manage accounts from this screen.`
-          : `${acct.username} is now a staff account. The Accounts tab is hidden from them.`,
-    });
-    defer(() => setNewRowId(null), 2400);
-  };
+  function startEdit(acct) {
+    setEditingId(acct.id);
+    setEditRole(acct.role);
+    setRowError(null);
+    setConfirmId(null);
+  }
 
-  const deactivate = (acct) => {
-    setAccounts((prev) => prev.map((a) => (a.id === acct.id ? { ...a, is_active: false } : a)));
-    setBanner({
-      tone: 'success',
-      text: `${acct.username} deactivated. They cannot sign in until an admin reactivates the account — their appointments stay as they are.`,
-    });
-    setNewRowId(acct.id);
-    defer(() => setNewRowId(null), 2400);
-  };
+  function cancelEdit() {
+    setEditingId(null);
+    setRowError(null);
+  }
 
-  const reactivate = (acct) => {
-    setAccounts((prev) => prev.map((a) => (a.id === acct.id ? { ...a, is_active: true } : a)));
-    setBanner({ tone: 'success', text: `${acct.username} reactivated. Their old password still works.` });
-    setNewRowId(acct.id);
-    defer(() => setNewRowId(null), 2400);
-  };
+  async function saveEdit(acct) {
+    setRowBusyId(acct.id);
+    setRowError(null);
+    try {
+      const updated = await apiFetch(`/accounts/${acct.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ role: editRole }),
+      });
+      setAccounts((prev) => prev.map((a) => (a.id === acct.id ? { ...a, ...updated } : a)));
+      setEditingId(null);
+      setBanner({
+        text: `${acct.username} is now ${editRole === "admin" ? "an admin" : "a staff"} account.`,
+      });
+    } catch (err) {
+      setRowError(describeAccountError(err).message);
+    } finally {
+      setRowBusyId(null);
+    }
+  }
+
+  function askDeactivate(acct) {
+    setConfirmId(acct.id);
+    setRowError(null);
+    setEditingId(null);
+  }
+
+  function cancelDeactivate() {
+    setConfirmId(null);
+  }
+
+  async function confirmDeactivate(acct) {
+    setRowBusyId(acct.id);
+    setRowError(null);
+    try {
+      const updated = await apiFetch(`/accounts/${acct.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ is_active: false }),
+      });
+      setAccounts((prev) => prev.map((a) => (a.id === acct.id ? { ...a, ...updated } : a)));
+      setConfirmId(null);
+      setBanner({
+        text: `${acct.username} deactivated. They cannot sign in until an admin reactivates the account.`,
+      });
+    } catch (err) {
+      setRowError(describeAccountError(err).message);
+    } finally {
+      setRowBusyId(null);
+    }
+  }
+
+  async function reactivate(acct) {
+    setRowBusyId(acct.id);
+    setRowError(null);
+    try {
+      const updated = await apiFetch(`/accounts/${acct.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ is_active: true }),
+      });
+      setAccounts((prev) => prev.map((a) => (a.id === acct.id ? { ...a, ...updated } : a)));
+      setBanner({ text: `${acct.username} reactivated. Their old password still works.` });
+    } catch (err) {
+      setRowError(describeAccountError(err).message);
+    } finally {
+      setRowBusyId(null);
+    }
+  }
 
   const onTabKeyDown = (e) => {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     e.preventDefault();
     const idx = tabs.findIndex((t) => t.key === activeTab);
-    const nextIdx = e.key === 'ArrowRight' ? (idx + 1) % tabs.length : (idx - 1 + tabs.length) % tabs.length;
+    const nextIdx =
+      e.key === "ArrowRight" ? (idx + 1) % tabs.length : (idx - 1 + tabs.length) % tabs.length;
     const nextKey = tabs[nextIdx].key;
     setTab(nextKey);
     defer(() => tabRefs.current[nextKey] && tabRefs.current[nextKey].focus(), 10);
   };
 
   const labelStyle = {
-    fontSize: '11px',
-    letterSpacing: '0.16em',
-    textTransform: 'uppercase',
+    fontSize: "11px",
+    letterSpacing: "0.16em",
+    textTransform: "uppercase",
     color: muted,
   };
 
@@ -234,14 +382,26 @@ export default function Screen() {
     borderRadius: brand.radius,
   };
 
-  const ghostBtn = 'vel-focus vel-ghost inline-flex items-center gap-2 px-3 h-11 text-sm transition-colors';
+  const ghostBtn =
+    "vel-focus vel-ghost inline-flex items-center gap-2 px-3 h-11 text-sm transition-colors";
   const ghostStyle = {
     border: `1px solid ${hairline}`,
     borderRadius: brand.radius,
     color: brand.primaryColor,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     fontFamily: brand.fontBody,
   };
+
+  const fieldStyle = (invalid) => ({
+    backgroundColor: brand.backgroundColor,
+    border: `1px solid ${invalid ? EMBER : hairline}`,
+    color: brand.primaryColor,
+    borderRadius: brand.radius,
+    fontFamily: brand.fontBody,
+    height: "44px",
+  });
+
+  const invalidField = (key) => Boolean(formError && formError.fields.indexOf(key) !== -1);
 
   return (
     <div
@@ -250,7 +410,7 @@ export default function Screen() {
         backgroundColor: brand.backgroundColor,
         color: brand.primaryColor,
         fontFamily: brand.fontBody,
-        '--vel-accent': accent,
+        "--vel-accent": accent,
       }}
     >
       <style>{`
@@ -278,24 +438,33 @@ export default function Screen() {
         {/* Row 1 — page title */}
         <header data-wf="b-0-0" className="mb-8">
           <div className="flex items-center gap-3">
-            <span aria-hidden="true" style={{ display: 'block', width: 28, height: 1, backgroundColor: accent }} />
+            <span
+              aria-hidden="true"
+              style={{ display: "block", width: 28, height: 1, backgroundColor: accent }}
+            />
             <p style={labelStyle}>Front desk · Administration</p>
           </div>
           <h1
             className="mt-4 text-[34px] leading-tight sm:text-[40px]"
             style={{ fontFamily: brand.fontHeading, color: brand.primaryColor }}
           >
-            Accounts &amp; help
+            {isAdmin ? "Accounts & help" : "Help"}
           </h1>
           <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed" style={{ color: muted }}>
-            Manage who can sign in at the front desk of Devon Street Clinic, and read the how-to guide for the
-            everyday jobs on the desk.
+            {isAdmin
+              ? "Manage who can sign in at the front desk of Devon Street Clinic, and read the how-to guide for the everyday jobs on the desk."
+              : "Read the how-to guide for the everyday jobs on the desk."}
           </p>
         </header>
 
         {/* Row 2 — tabs */}
         <div data-wf="b-1-0" className="mb-8" style={{ borderBottom: `1px solid ${hairline}` }}>
-          <div role="tablist" aria-label="Accounts and help sections" className="flex gap-1" onKeyDown={onTabKeyDown}>
+          <div
+            role="tablist"
+            aria-label="Accounts and help sections"
+            className="flex gap-1"
+            onKeyDown={onTabKeyDown}
+          >
             {tabs.map((t) => {
               const selected = activeTab === t.key;
               return (
@@ -315,13 +484,13 @@ export default function Screen() {
                   className="vel-focus relative -mb-px px-4 pb-3 pt-2 text-sm transition-colors"
                   style={{
                     color: selected ? brand.primaryColor : muted,
-                    borderBottom: `2px solid ${selected ? accent : 'transparent'}`,
+                    borderBottom: `2px solid ${selected ? accent : "transparent"}`,
                     fontFamily: brand.fontBody,
-                    letterSpacing: '0.01em',
+                    letterSpacing: "0.01em",
                   }}
                 >
                   {t.label}
-                  {t.key === 'accounts' ? (
+                  {t.key === "accounts" ? (
                     <span className="ml-2 text-[11px]" style={{ color: selected ? accent : muted }}>
                       admin only
                     </span>
@@ -332,48 +501,95 @@ export default function Screen() {
           </div>
         </div>
 
-        {activeTab === 'accounts' ? (
-          <section id="panel-accounts" role="tabpanel" aria-labelledby="tab-accounts" tabIndex={-1} className="vel-fade">
-            {/* Row 3 — primary action */}
-            <Button
-              data-wf="b-2-0"
-              type="button"
-              onClick={addNextAccount}
-              disabled={saving || !nextHire}
-              aria-describedby="add-account-hint"
-              className="vel-focus vel-primary inline-flex h-12 items-center gap-2 px-5 text-sm font-medium transition-[filter]"
-              style={{
-                backgroundColor: accent,
-                color: brand.backgroundColor,
-                borderRadius: brand.radius,
-                border: 'none',
-                fontFamily: brand.fontBody,
-                letterSpacing: '0.01em',
-                opacity: saving || !nextHire ? 0.55 : 1,
-                cursor: !nextHire ? 'not-allowed' : saving ? 'progress' : 'pointer',
-              }}
-            >
-              {saving ? (
-                <Clock className="h-4 w-4 animate-pulse" aria-hidden="true" />
-              ) : (
-                <Plus className="h-4 w-4" aria-hidden="true" />
-              )}
-              {saving ? 'Creating account…' : 'Add receptionist account'}
-            </Button>
+        {activeTab === "accounts" ? (
+          <section
+            id="panel-accounts"
+            role="tabpanel"
+            aria-labelledby="tab-accounts"
+            tabIndex={-1}
+            className="vel-fade"
+          >
+            {/* Row 3 — new account form */}
+            <section data-wf="b-2-0" className="overflow-hidden" style={panelStyle}>
+              <div className="px-6 py-5" style={{ borderBottom: `1px solid ${hairline}` }}>
+                <h2 className="text-[22px]" style={{ fontFamily: brand.fontHeading }}>
+                  Create an account
+                </h2>
+              </div>
+              <form onSubmit={handleCreate} noValidate className="px-6 py-6">
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div>
+                    <Label htmlFor="new-username" className="block" style={labelStyle}>
+                      Username
+                    </Label>
+                    <Input
+                      id="new-username"
+                      value={form.username}
+                      onChange={(e) => setField("username", e.target.value)}
+                      aria-invalid={invalidField("username") ? "true" : undefined}
+                      className="mt-2 w-full"
+                      style={fieldStyle(invalidField("username"))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="new-password" className="block" style={labelStyle}>
+                      Temporary password
+                    </Label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      value={form.password}
+                      onChange={(e) => setField("password", e.target.value)}
+                      aria-invalid={invalidField("password") ? "true" : undefined}
+                      className="mt-2 w-full"
+                      style={fieldStyle(invalidField("password"))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="new-role" className="block" style={labelStyle}>
+                      Role
+                    </Label>
+                    <Select
+                      id="new-role"
+                      value={form.role}
+                      onChange={(e) => setField("role", e.target.value)}
+                      className="mt-2 w-full"
+                      style={fieldStyle(false)}
+                      options={[
+                        { value: "staff", label: "Staff" },
+                        { value: "admin", label: "Admin" },
+                      ]}
+                    />
+                  </div>
+                </div>
 
-            <p id="add-account-hint" className="mt-3 max-w-[66ch] text-sm leading-relaxed" style={{ color: muted }} aria-live="polite">
-              {saving ? (
-                'Writing to the account list — the temporary password is shown once, at the desk.'
-              ) : nextHire ? (
-                <>
-                  Next on the onboarding list:{' '}
-                  <span style={{ color: accent }}>{nextHire.username}</span> ·{' '}
-                  {nextHire.role === 'admin' ? 'Admin' : 'Staff'} — {nextHire.note}
-                </>
-              ) : (
-                'Everyone cleared by the practice manager now has a login. New starters are added to the onboarding list first.'
-              )}
-            </p>
+                {formError ? (
+                  <p role="alert" className="mt-4 text-sm" style={{ color: EMBER }}>
+                    {formError.message}
+                  </p>
+                ) : null}
+
+                <Button
+                  type="submit"
+                  disabled={creating}
+                  className="vel-focus vel-primary mt-5 inline-flex h-11 items-center gap-2 px-5 text-sm font-medium"
+                  style={{
+                    backgroundColor: accent,
+                    color: brand.backgroundColor,
+                    borderRadius: brand.radius,
+                    border: "none",
+                    opacity: creating ? 0.6 : 1,
+                  }}
+                >
+                  {creating ? (
+                    <Clock className="h-4 w-4 animate-pulse" aria-hidden="true" />
+                  ) : (
+                    <Plus className="h-4 w-4" aria-hidden="true" />
+                  )}
+                  {creating ? "Creating account…" : "Create account"}
+                </Button>
+              </form>
+            </section>
 
             {banner ? (
               <div
@@ -385,11 +601,21 @@ export default function Screen() {
                   borderRadius: brand.radius,
                 }}
               >
-                <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" style={{ color: accent }} />
+                <CheckCircle
+                  className="mt-0.5 h-4 w-4 shrink-0"
+                  aria-hidden="true"
+                  style={{ color: accent }}
+                />
                 <p className="flex-1 text-sm" style={{ color: brand.primaryColor }}>
                   {banner.text}
                 </p>
               </div>
+            ) : null}
+
+            {rowError ? (
+              <p role="alert" className="mt-4 text-sm" style={{ color: EMBER }}>
+                {rowError}
+              </p>
             ) : null}
 
             {/* Row 4 — accounts table */}
@@ -400,178 +626,294 @@ export default function Screen() {
               >
                 <div>
                   <h2 className="text-[22px]" style={{ fontFamily: brand.fontHeading }}>
-                    Receptionist accounts{' '}
-                    <span style={{ color: accent, fontVariantNumeric: 'tabular-nums' }}>({accounts.length})</span>
+                    Receptionist accounts{" "}
+                    <span style={{ color: accent, fontVariantNumeric: "tabular-nums" }}>
+                      ({accounts.length})
+                    </span>
                   </h2>
                   <p className="mt-1 text-sm" style={{ color: muted }}>
-                    {accounts.filter((a) => a.is_active).length} active ·{' '}
+                    {accounts.filter((a) => a.is_active).length} active ·{" "}
                     {accounts.filter((a) => !a.is_active).length} deactivated
                   </p>
                 </div>
-                <p className="flex items-center gap-2 text-xs" style={{ color: muted }}>
-                  <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                  Last refreshed 08:14 today
-                </p>
               </div>
 
-              {accounts.length === 0 ? (
+              {loading ? (
+                <p role="status" className="px-6 py-10 text-sm" style={{ color: muted }}>
+                  Loading accounts…
+                </p>
+              ) : loadError ? (
                 <div className="px-6 py-10">
                   <Empty
-                    title="No receptionist accounts yet"
-                    description="Nobody can sign in to DevonTester until an admin creates the first front-desk account."
+                    title="Couldn't load accounts"
+                    description="There was a problem reaching the account list. Check your connection and try again."
                     action={
                       <Button
                         type="button"
-                        onClick={addNextAccount}
+                        onClick={loadAccounts}
                         className="vel-focus vel-primary inline-flex h-11 items-center gap-2 px-4 text-sm"
-                        style={{ backgroundColor: accent, color: brand.backgroundColor, borderRadius: brand.radius, border: 'none' }}
+                        style={{
+                          backgroundColor: accent,
+                          color: brand.backgroundColor,
+                          borderRadius: brand.radius,
+                          border: "none",
+                        }}
                       >
-                        <Plus className="h-4 w-4" aria-hidden="true" />
-                        Add receptionist account
+                        Try again
                       </Button>
                     }
                   />
                 </div>
+              ) : accounts.length === 0 ? (
+                <div className="px-6 py-10">
+                  <Empty
+                    title="No receptionist accounts yet"
+                    description="Nobody can sign in to DevonTester until an admin creates the first front-desk account."
+                  />
+                </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <Table className="w-full text-sm" style={{ fontVariantNumeric: 'tabular-nums', borderCollapse: 'collapse' }}>
+                  <Table
+                    className="w-full text-sm"
+                    style={{ fontVariantNumeric: "tabular-nums", borderCollapse: "collapse" }}
+                  >
                     <THead>
                       <TR style={{ borderBottom: `1px solid ${hairline}` }}>
-                        <TH data-wf="i-3-0-0" scope="col" className="px-6 py-3 text-left font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-left font-normal"
+                          style={labelStyle}
+                        >
                           Username
                         </TH>
-                        <TH data-wf="i-3-0-1" scope="col" className="px-6 py-3 text-left font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-left font-normal"
+                          style={labelStyle}
+                        >
                           Role
                         </TH>
-                        <TH data-wf="i-3-0-2" scope="col" className="px-6 py-3 text-left font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-left font-normal"
+                          style={labelStyle}
+                        >
                           Active
                         </TH>
-                        <TH data-wf="i-3-0-3" scope="col" className="px-6 py-3 text-left font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-left font-normal"
+                          style={labelStyle}
+                        >
                           Created
                         </TH>
-                        <TH scope="col" className="px-6 py-3 text-right font-normal" style={labelStyle}>
+                        <TH
+                          scope="col"
+                          className="px-6 py-3 text-right font-normal"
+                          style={labelStyle}
+                        >
                           <span className="sr-only">Account actions</span>
                         </TH>
                       </TR>
                     </THead>
                     <TBody>
-                      {accounts.map((a) => (
-                        <TR
-                          key={a.id}
-                          className={`vel-row transition-colors ${newRowId === a.id ? 'vel-row-new' : ''}`}
-                          style={{ borderBottom: `1px solid ${hairlineSoft}` }}
-                        >
-                          <TD className="px-6 py-4 align-middle">
-                            <div className="flex items-center gap-3">
-                              <Avatar name={a.username} className="h-9 w-9 shrink-0" />
-                              <span>
-                                <span className="block" style={{ color: brand.primaryColor }}>
-                                  {a.username}
+                      {accounts.map((a) => {
+                        const isEditing = editingId === a.id;
+                        const isConfirming = confirmId === a.id;
+                        const busy = rowBusyId === a.id;
+                        return (
+                          <TR
+                            key={a.id}
+                            className="vel-row transition-colors"
+                            style={{ borderBottom: `1px solid ${hairlineSoft}` }}
+                          >
+                            <TD className="px-6 py-4 align-middle">
+                              <div className="flex items-center gap-3">
+                                <Avatar name={a.username} className="h-9 w-9 shrink-0" />
+                                <span>
+                                  <span className="block" style={{ color: brand.primaryColor }}>
+                                    {a.username}
+                                  </span>
                                 </span>
-                                <span className="block text-xs" style={{ color: accent, letterSpacing: '0.08em' }}>
-                                  {a.id}
-                                </span>
-                              </span>
-                            </div>
-                          </TD>
-                          <TD className="px-6 py-4 align-middle">
-                            <Badge
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs"
-                              style={{
-                                backgroundColor: a.role === 'admin' ? withAlpha(accent, 0.12) : 'transparent',
-                                border: `1px solid ${a.role === 'admin' ? withAlpha(accent, 0.4) : hairline}`,
-                                color: a.role === 'admin' ? accent : brand.primaryColor,
-                                borderRadius: brand.radius,
-                              }}
-                            >
-                              {a.role === 'admin' ? 'Admin' : 'Staff'}
-                            </Badge>
-                          </TD>
-                          <TD className="px-6 py-4 align-middle">
-                            <span className="inline-flex items-center gap-2" style={{ color: a.is_active ? brand.primaryColor : muted }}>
-                              {a.is_active ? (
-                                <CheckCircle className="h-4 w-4" aria-hidden="true" style={{ color: accent }} />
+                              </div>
+                            </TD>
+                            <TD className="px-6 py-4 align-middle">
+                              {isEditing ? (
+                                <Select
+                                  aria-label={`Role for ${a.username}`}
+                                  value={editRole}
+                                  onChange={(e) => setEditRole(e.target.value)}
+                                  style={fieldStyle(false)}
+                                  options={[
+                                    { value: "staff", label: "Staff" },
+                                    { value: "admin", label: "Admin" },
+                                  ]}
+                                />
                               ) : (
-                                <X className="h-4 w-4" aria-hidden="true" />
+                                <Badge
+                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs"
+                                  style={{
+                                    backgroundColor:
+                                      a.role === "admin" ? withAlpha(accent, 0.12) : "transparent",
+                                    border: `1px solid ${a.role === "admin" ? withAlpha(accent, 0.4) : hairline}`,
+                                    color: a.role === "admin" ? accent : brand.primaryColor,
+                                    borderRadius: brand.radius,
+                                  }}
+                                >
+                                  {a.role === "admin" ? "Admin" : "Staff"}
+                                </Badge>
                               )}
-                              {a.is_active ? 'Active' : 'Deactivated'}
-                            </span>
-                          </TD>
-                          <TD className="px-6 py-4 align-middle" style={{ color: muted }}>
-                            {formatCreated(a.created_at)}
-                          </TD>
-                          <TD className="px-6 py-4 text-right align-middle">
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                type="button"
-                                onClick={() => toggleRole(a)}
-                                aria-label={
-                                  a.role === 'admin'
-                                    ? `Change ${a.username} to a staff account`
-                                    : `Change ${a.username} to an admin account`
-                                }
-                                className={ghostBtn}
-                                style={ghostStyle}
+                            </TD>
+                            <TD className="px-6 py-4 align-middle">
+                              <span
+                                className="inline-flex items-center gap-2"
+                                style={{ color: a.is_active ? brand.primaryColor : muted }}
                               >
-                                <Edit className="h-3.5 w-3.5" aria-hidden="true" />
-                                {a.role === 'admin' ? 'Make staff' : 'Make admin'}
-                              </Button>
-                              {a.is_active ? (
-                                <Button
-                                  type="button"
-                                  onClick={() => deactivate(a)}
-                                  aria-label={`Deactivate account ${a.username}`}
-                                  className={ghostBtn}
-                                  style={{ ...ghostStyle, color: EMBER, border: `1px solid ${withAlpha(EMBER, 0.45)}` }}
-                                >
-                                  Deactivate
-                                </Button>
+                                {a.is_active ? (
+                                  <CheckCircle
+                                    className="h-4 w-4"
+                                    aria-hidden="true"
+                                    style={{ color: accent }}
+                                  />
+                                ) : (
+                                  <X className="h-4 w-4" aria-hidden="true" />
+                                )}
+                                {a.is_active ? "Active" : "Deactivated"}
+                              </span>
+                            </TD>
+                            <TD className="px-6 py-4 align-middle" style={{ color: muted }}>
+                              {formatCreated(a.created_at)}
+                            </TD>
+                            <TD className="px-6 py-4 text-right align-middle">
+                              {isConfirming ? (
+                                <div className="flex items-center justify-end gap-3">
+                                  <span className="text-sm" style={{ color: muted }}>
+                                    Deactivate {a.username}?
+                                  </span>
+                                  <Button
+                                    type="button"
+                                    onClick={() => confirmDeactivate(a)}
+                                    disabled={busy}
+                                    aria-label={`Confirm deactivating ${a.username}`}
+                                    className={ghostBtn}
+                                    style={{
+                                      ...ghostStyle,
+                                      color: EMBER,
+                                      border: `1px solid ${withAlpha(EMBER, 0.45)}`,
+                                    }}
+                                  >
+                                    {busy ? "Deactivating…" : "Confirm"}
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    onClick={cancelDeactivate}
+                                    aria-label={`Cancel deactivating ${a.username}`}
+                                    className={ghostBtn}
+                                    style={ghostStyle}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+                              ) : isEditing ? (
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    type="button"
+                                    onClick={() => saveEdit(a)}
+                                    disabled={busy}
+                                    aria-label={`Save role for ${a.username}`}
+                                    className={ghostBtn}
+                                    style={ghostStyle}
+                                  >
+                                    {busy ? "Saving…" : "Save"}
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    onClick={cancelEdit}
+                                    aria-label={`Cancel editing ${a.username}`}
+                                    className={ghostBtn}
+                                    style={ghostStyle}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
                               ) : (
-                                <Button
-                                  type="button"
-                                  onClick={() => reactivate(a)}
-                                  aria-label={`Reactivate account ${a.username}`}
-                                  className={ghostBtn}
-                                  style={ghostStyle}
-                                >
-                                  Reactivate
-                                </Button>
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    type="button"
+                                    onClick={() => startEdit(a)}
+                                    aria-label={`Edit ${a.username}`}
+                                    className={ghostBtn}
+                                    style={ghostStyle}
+                                  >
+                                    <Edit className="h-3.5 w-3.5" aria-hidden="true" />
+                                    Edit
+                                  </Button>
+                                  {a.is_active ? (
+                                    <Button
+                                      type="button"
+                                      onClick={() => askDeactivate(a)}
+                                      aria-label={`Deactivate account ${a.username}`}
+                                      className={ghostBtn}
+                                      style={{
+                                        ...ghostStyle,
+                                        color: EMBER,
+                                        border: `1px solid ${withAlpha(EMBER, 0.45)}`,
+                                      }}
+                                    >
+                                      Deactivate
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      onClick={() => reactivate(a)}
+                                      disabled={busy}
+                                      aria-label={`Reactivate account ${a.username}`}
+                                      className={ghostBtn}
+                                      style={ghostStyle}
+                                    >
+                                      {busy ? "Reactivating…" : "Reactivate"}
+                                    </Button>
+                                  )}
+                                </div>
                               )}
-                            </div>
-                          </TD>
-                        </TR>
-                      ))}
+                            </TD>
+                          </TR>
+                        );
+                      })}
                     </TBody>
                   </Table>
                 </div>
               )}
             </section>
-
-            {/* Row 5 — admin-only note */}
-            <div data-wf="b-4-0" className="mt-6">
-              <p className="max-w-[72ch] text-sm leading-relaxed" style={{ color: muted }}>
-                Account management is visible to admin accounts only. Staff accounts see the how-to guide alone.
-              </p>
-            </div>
           </section>
         ) : null}
 
-        {activeTab === 'help' ? (
-          <section id="panel-help" role="tabpanel" aria-labelledby="tab-help" tabIndex={-1} className="vel-fade">
+        {activeTab === "help" ? (
+          <section
+            id="panel-help"
+            role="tabpanel"
+            aria-labelledby="tab-help"
+            tabIndex={-1}
+            className="vel-fade"
+          >
             {!isAdmin ? (
               <div
                 className="mb-8 flex flex-wrap items-start gap-4 px-6 py-5"
                 style={{ ...panelStyle, backgroundColor: surfaceHi }}
               >
-                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" style={{ color: accent }} />
+                <AlertCircle
+                  className="mt-0.5 h-5 w-5 shrink-0"
+                  aria-hidden="true"
+                  style={{ color: accent }}
+                />
                 <div className="min-w-[18rem] flex-1">
                   <h2 className="text-[18px]" style={{ fontFamily: brand.fontHeading }}>
                     Accounts is for admins
                   </h2>
                   <p className="mt-2 max-w-[66ch] text-sm leading-relaxed" style={{ color: muted }}>
-                    You are signed in as a staff account, so creating, editing and deactivating receptionist logins is
-                    hidden. Ask <span style={{ color: accent }}>m.bennett</span> — the clinic admin — to set up or close
-                    an account for you.
+                    You are signed in as a staff account, so creating, editing and deactivating
+                    receptionist logins is not available here. Ask an admin to set up or close an
+                    account for you.
                   </p>
                 </div>
               </div>
@@ -593,7 +935,13 @@ export default function Screen() {
                     {HELP_ITEMS.map((item, i) => {
                       const open = openHelp === item.id;
                       return (
-                        <li key={item.id} style={{ borderBottom: i === HELP_ITEMS.length - 1 ? 'none' : `1px solid ${hairlineSoft}` }}>
+                        <li
+                          key={item.id}
+                          style={{
+                            borderBottom:
+                              i === HELP_ITEMS.length - 1 ? "none" : `1px solid ${hairlineSoft}`,
+                          }}
+                        >
                           <h3>
                             <button
                               data-wf={item.wf}
@@ -605,12 +953,19 @@ export default function Screen() {
                             >
                               <span
                                 className="mt-0.5 shrink-0 text-xs"
-                                style={{ color: accent, fontVariantNumeric: 'tabular-nums', letterSpacing: '0.1em' }}
+                                style={{
+                                  color: accent,
+                                  fontVariantNumeric: "tabular-nums",
+                                  letterSpacing: "0.1em",
+                                }}
                               >
-                                {String(i + 1).padStart(2, '0')}
+                                {String(i + 1).padStart(2, "0")}
                               </span>
                               <span className="flex-1">
-                                <span className="block text-[16px]" style={{ color: brand.primaryColor }}>
+                                <span
+                                  className="block text-[16px]"
+                                  style={{ color: brand.primaryColor }}
+                                >
                                   {item.title}
                                 </span>
                                 <span className="mt-1 block text-sm" style={{ color: muted }}>
@@ -620,15 +975,25 @@ export default function Screen() {
                               <ChevronDown
                                 className="mt-1 h-4 w-4 shrink-0 transition-transform duration-200"
                                 aria-hidden="true"
-                                style={{ color: muted, transform: open ? 'rotate(180deg)' : 'none' }}
+                                style={{
+                                  color: muted,
+                                  transform: open ? "rotate(180deg)" : "none",
+                                }}
                               />
                             </button>
                           </h3>
                           {open ? (
-                            <div id={`${item.id}-steps`} className="vel-steps px-6 pb-6 pl-[4.25rem]">
+                            <div
+                              id={`${item.id}-steps`}
+                              className="vel-steps px-6 pb-6 pl-[4.25rem]"
+                            >
                               <ol className="space-y-2">
                                 {item.steps.map((s, si) => (
-                                  <li key={si} className="flex gap-3 text-sm leading-relaxed" style={{ color: brand.primaryColor }}>
+                                  <li
+                                    key={si}
+                                    className="flex gap-3 text-sm leading-relaxed"
+                                    style={{ color: brand.primaryColor }}
+                                  >
                                     <span aria-hidden="true" style={{ color: accent }}>
                                       ·
                                     </span>
@@ -660,19 +1025,29 @@ export default function Screen() {
               <aside data-wf="b-5-1" className="lg:col-span-5">
                 <Card className="h-full" style={{ ...panelStyle, backgroundColor: surfaceHi }}>
                   <CardHeader className="px-6 pt-6">
-                    <CardTitle className="text-[20px]" style={{ fontFamily: brand.fontHeading, color: brand.primaryColor }}>
+                    <CardTitle
+                      className="text-[20px]"
+                      style={{ fontFamily: brand.fontHeading, color: brand.primaryColor }}
+                    >
                       What this tool does not do
                     </CardTitle>
-                    <CardDescription className="mt-2 text-sm leading-relaxed" style={{ color: muted }}>
-                      Agreed scope for DevonTester. If a patient asks for any of these at the desk, handle it the way
-                      the clinic did before.
+                    <CardDescription
+                      className="mt-2 text-sm leading-relaxed"
+                      style={{ color: muted }}
+                    >
+                      Agreed scope for DevonTester. If a patient asks for any of these at the desk,
+                      handle it the way the clinic did before.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="px-6 pb-2 pt-5">
                     <ul className="space-y-4">
                       {NOT_IN_SCOPE.map((line) => (
                         <li key={line} className="flex items-start gap-3 text-sm leading-relaxed">
-                          <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" style={{ color: EMBER }} />
+                          <X
+                            className="mt-0.5 h-4 w-4 shrink-0"
+                            aria-hidden="true"
+                            style={{ color: EMBER }}
+                          />
                           <span style={{ color: brand.primaryColor }}>{line}</span>
                         </li>
                       ))}
@@ -681,8 +1056,8 @@ export default function Screen() {
                   <CardFooter className="block px-6 pb-6 pt-5">
                     <div style={{ borderTop: `1px solid ${hairline}` }} className="pt-4">
                       <p className="text-xs leading-relaxed" style={{ color: muted }}>
-                        Single clinic · dummy test records only, never real patient data. Everything the desk needs sits
-                        under Today, Calendar and Patients.
+                        Single clinic · dummy test records only, never real patient data. Everything
+                        the desk needs sits under Today, Calendar and Patients.
                       </p>
                     </div>
                   </CardFooter>

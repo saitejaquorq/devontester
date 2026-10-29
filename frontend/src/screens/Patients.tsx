@@ -7,6 +7,7 @@ import { Icons } from "@/lib/icons";
 import { brand } from "@/lib/brand";
 import { useNavigate } from "@/lib/navigate";
 import { apiFetch } from "@/lib/api";
+import { SELECTED_PATIENT_KEY } from "@/screens/PatientDetail";
 
 const { Button, Input, Label, Table, THead, TBody, TR, TH, TD, Empty } = UI;
 
@@ -152,6 +153,18 @@ export default function Screen() {
 
   function setField(key, value) {
     setForm((prev) => Object.assign({}, prev, { [key]: value }));
+  }
+
+  // Remembers which record to load and hands off to the patient-detail screen,
+  // which has no route param of its own to carry the id.
+  function openPatient(p) {
+    try {
+      window.sessionStorage.setItem(SELECTED_PATIENT_KEY, p.id);
+    } catch {
+      // Storage unavailable (e.g. private mode) -- the detail screen will show its
+      // own "couldn't load" state rather than crash.
+    }
+    navigate("patient-detail");
   }
 
   async function handleSave(event) {
@@ -557,7 +570,7 @@ export default function Screen() {
                                 <TR
                                   key={p.id}
                                   className={"vt-row cursor-pointer" + (isNew ? " vt-in" : "")}
-                                  onClick={() => navigate("patient-detail")}
+                                  onClick={() => openPatient(p)}
                                   style={isNew ? { backgroundColor: accentSoft } : undefined}
                                 >
                                   <TD style={cellStyle}>
@@ -582,7 +595,7 @@ export default function Screen() {
                                           aria-label={`Open record for ${p.first_name} ${p.last_name}`}
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            navigate("patient-detail");
+                                            openPatient(p);
                                           }}
                                           style={{
                                             color: brand.primaryColor,

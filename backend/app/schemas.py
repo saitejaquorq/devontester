@@ -4,6 +4,7 @@ One pair per entity in the approved data model.
 """
 
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
@@ -72,3 +73,69 @@ class PatientOut(BaseModel):
     email: str | None = None
     created_at: datetime
     updated_at: datetime
+
+
+class ProviderOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    name: str
+    specialty: str | None = None
+    is_active: bool
+
+
+class AppointmentOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    provider_id: str
+    patient_id: str
+    patient_name: str
+    starts_at: datetime
+    ends_at: datetime
+    status: str
+
+
+# -- Accounts (US-003): admin-only account management ----------------------
+
+AccountRole = Literal["admin", "staff"]
+
+
+class AccountCreate(BaseModel):
+    username: str
+    password: str
+    role: AccountRole = "staff"
+
+    @field_validator("username")
+    @classmethod
+    def _check_username(cls, value: str) -> str:
+        return _require_non_blank(value)
+
+    @field_validator("password")
+    @classmethod
+    def _check_password(cls, value: str) -> str:
+        if value is None or len(value) < 8:
+            raise ValueError("password must be at least 8 characters")
+        return value
+
+
+class AccountUpdate(BaseModel):
+    username: str | None = None
+    role: AccountRole | None = None
+    is_active: bool | None = None
+
+    @field_validator("username")
+    @classmethod
+    def _check_username(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        return _require_non_blank(value)
+
+
+class AccountAdminOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    username: str
+    role: str
+    is_active: bool
