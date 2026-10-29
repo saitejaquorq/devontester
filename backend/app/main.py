@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 from app import models  # noqa: F401 -- imported so the tables register before create_all
 from app.auth import extract_bearer_token, verify_token
 from app.database import Base, SessionLocal, engine
+from app.routers import accounts as accounts_router
 from app.routers import auth as auth_router
 from app.routers import calendar as calendar_router
 from app.routers import patients as patients_router
@@ -51,6 +52,7 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 
 app.include_router(auth_router.router)
+app.include_router(accounts_router.router)
 app.include_router(patients_router.router)
 app.include_router(providers_router.router)
 app.include_router(calendar_router.router)

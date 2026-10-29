@@ -1,8 +1,8 @@
-"""Creates a usable receptionist test account; safe to run repeatedly.
+"""Creates a usable admin test account; safe to run repeatedly.
 
-Run: backend/.venv/bin/python backend/scripts/seed_account.py [username] [password]
-Defaults to username "receptionist", password "ChangeMe123!" when no
-arguments are given.
+Run: backend/.venv/bin/python backend/scripts/seed_account.py [username] [password] [role]
+Defaults to username "receptionist", password "ChangeMe123!", role "admin"
+when no arguments are given.
 """
 
 import sys
@@ -16,9 +16,12 @@ from app.security import hash_password  # noqa: E402
 
 DEFAULT_USERNAME = "receptionist"
 DEFAULT_PASSWORD = "ChangeMe123!"
+DEFAULT_ROLE = "admin"
 
 
-def seed(username: str = DEFAULT_USERNAME, password: str = DEFAULT_PASSWORD) -> None:
+def seed(
+    username: str = DEFAULT_USERNAME, password: str = DEFAULT_PASSWORD, role: str = DEFAULT_ROLE
+) -> None:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
@@ -26,11 +29,9 @@ def seed(username: str = DEFAULT_USERNAME, password: str = DEFAULT_PASSWORD) -> 
         if existing is not None:
             print(f"account '{username}' already exists")
             return
-        db.add(
-            Account(username=username, password_hash=hash_password(password), role="receptionist")
-        )
+        db.add(Account(username=username, password_hash=hash_password(password), role=role))
         db.commit()
-        print(f"created account '{username}'")
+        print(f"created account '{username}' with role '{role}'")
     finally:
         db.close()
 

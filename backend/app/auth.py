@@ -63,6 +63,16 @@ def get_current_account(
     return account
 
 
+def require_admin(
+    account: Account = Depends(get_current_account),  # noqa: B008
+) -> Account:
+    """``get_current_account``, but only lets an admin through; any other
+    (e.g. staff) role is a 403 (AC-007)."""
+    if account.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin role required")
+    return account
+
+
 def get_token_payload(
     request: Request,
     account: Account = Depends(get_current_account),  # noqa: B008

@@ -24,8 +24,9 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 // The app's menu, drawn around every screen except the ones routed outside it below.
 function AppShellLayout() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const routerNavigate = useRouterNavigate();
+  const isAdmin = user?.role === "admin";
 
   async function handleSignOut() {
     await logout();
@@ -62,7 +63,7 @@ function AppShellLayout() {
             </NavLink>
             <NavLink to="/settings" className={navLinkClass}>
               <Icons.Settings size={16} />
-              {"Accounts & help"}
+              {isAdmin ? "Accounts & help" : "Help"}
             </NavLink>
             <button
               type="button"
