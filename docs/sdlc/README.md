@@ -6,7 +6,7 @@
 An appointment calendar app for clinic visits with history of every person available.
 Should have history of a user. used by the receptionist of the clinic. No access to patients
 
-**Documentation version:** v8
+**Documentation version:** v9
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -16,7 +16,7 @@ Should have history of a user. used by the receptionist of the clinic. No access
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 9 entries |
-| [Development](development/README.md) | 7 entries |
+| [Development](development/README.md) | 5 entries |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
@@ -25,14 +25,14 @@ Should have history of a user. used by the receptionist of the clinic. No access
 | [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
 | [Sprint plan](development/sprint-plan.md) | 4 sprints |
 | [Developer guide](development/developer-guide.md) | generated |
-| [API reference](development/api-reference.md) | 8 routes |
+| [API reference](development/api-reference.md) | 13 routes |
 | [Test report](testing/test-report.md) | not run yet |
-| [Tests](testing/test-cases.md) | 81 tests |
+| [Tests](testing/test-cases.md) | 131 tests |
 | [Deployment guide](deployment/deployment-guide.md) | deployed |
 | [Runbook](deployment/runbook.md) | deployed |
-| [Release notes](deployment/release-notes.md) | 4 releases |
+| [Release notes](deployment/release-notes.md) | 5 releases |
 | [Traceability matrix](traceability-matrix.md) | 18 requirements |
-| [Changelog](CHANGELOG.md) | 8 versions |
+| [Changelog](CHANGELOG.md) | 9 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -72,16 +72,30 @@ Should have history of a user. used by the receptionist of the clinic. No access
 
 ### Development
 
-- No explicit mapping is given of which backlog items belong to which sprint, so sprint-to-story traceability cannot be confirmed beyond the sprint goal descriptions.
-- Epic-level items (EPIC-001 through EPIC-008) have no points or assigned role recorded in the plan.
-- Run status says 'completed' yet 13 of 18 planned stories (US-003, US-005 through US-016) have no delivered/ticket status recorded -- unclear whether this run only covered a partial scope or those stories remain unbuilt.
-- US-001, US-002, and US-017 all cite the identical commit hash (9eb9e558361ff8945abe70f37b8ba235f8d828ae); unclear whether they shipped as one combined change or this is a reporting duplication.
-- Task-level delivery (e.g., US-001-T1..T4, US-003-T1..T4, US-007-T1..T3, US-009-T1..T4) is not individually confirmed -- only story-level ticket status was reported.
-- Individual subtask completion (US-001-T1 through T4) is not separately confirmed -- only the parent story ticket status was reported.
-- Shares a commit hash with US-001 and US-017; unclear if bundled into a single change or a data duplication in reporting.
-- No frontend task was listed in the plan for a patient-entry UI; unclear whether a matching screen was built alongside the backend record creation.
-- Shares commit hash with US-001/US-002; the input does not detail what transport/auth baseline configuration was actually applied.
-- Delivered under a qa-agent role rather than a dev role; the input does not specify what boundary/exclusion logic or documentation was actually implemented.
+- No dates given for sprint start/end or plan approval.
+- No owner/approver named for the plan approval.
+- Epics themselves have no assigned role (unassigned) -- unclear if this is intentional or a gap in planning.
+- No test or QA evidence linked to this ticket in the input.
+- Sub-task-level (US-003-T1..T4) completion status not individually confirmed, only the parent story is marked delivered.
+- No sub-task breakdown was given, so implementation scope beyond 'edit patient record' cannot be fully verified.
+- Sub-task-level (US-007-T1..T3) completion status not individually confirmed, only the parent story is marked delivered.
+- Conflict: run status says 'completed' but only 3/18 stories have recorded delivery -- needs clarification on whether this reflects a partial run or a reporting gap.
+- No delivery record for US-001 (Receptionist sign-in).
+- No delivery record for US-002 (Sign out).
+- No delivery record for US-004 (Add a new patient record).
+- No delivery record for US-006 (Find a patient).
+- No delivery record for US-008 (Today's appointments overview).
+- No delivery record for US-009 (Book an appointment).
+- No delivery record for US-010 (Add a reason-for-visit/front-desk note).
+- No delivery record for US-011 (Reschedule an appointment).
+- No delivery record for US-012 (Cancel an appointment).
+- No delivery record for US-013 (Mark appointment status).
+- No delivery record for US-014 (View a patient's appointment history).
+- No delivery record for US-015 (Access how-to documentation).
+- No delivery record for US-016 (Responsive desktop web access).
+- No delivery record for US-017 (Secure transport and authentication baseline).
+- No delivery record for US-018 (Excluded features boundary).
+- No sub-task-level status reported for any story in the development run input.
 
 ### Testing
 

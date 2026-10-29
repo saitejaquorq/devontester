@@ -3,6 +3,15 @@
 > Maintained by QuorQ AI SDLC. Text between `sdlc:auto` markers is regenerated; anything outside them is yours and is kept.
 
 <!-- sdlc:auto:start releases -->
+## 880146b4dedb — 2026-10-29
+
+**Commit:** `880146b`
+
+**Delivered:**
+- US-003: Admin and staff roles
+- US-005: Edit an existing patient record
+- US-007: View a provider's day or week calendar
+
 ## d3dbc3ca537a — 2026-10-28
 
 **Commit:** `d3dbc3c`
